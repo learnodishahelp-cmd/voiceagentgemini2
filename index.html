@@ -1,700 +1,883 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-  <title>GrammarMaster AI • English tutor</title>
-  <!-- Production-ready single-page app: HTML + CSS + JS -->
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GrammarMaster AI - Speak, Learn and Improve English</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;700&family=Noto+Sans+Oriya:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --primary-hover: #1557b0;
+            --primary-light: #e8f0fe;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-main: #3c4043;
+            --text-muted: #5f6368;
+            --border-color: #dadce0;
+            --user-msg-bg: #e8f0fe;
+            --ai-msg-bg: #ffffff;
+            --success-color: #137333;
+            --error-color: #c5221f;
+            --warning-color: #b06000;
+        }
 
-    :root {
-      --primary: #1e3a8a;
-      --primary-light: #2563eb;
-      --primary-soft: #dbeafe;
-      --white: #ffffff;
-      --gray-50: #f8fafc;
-      --gray-100: #f1f5f9;
-      --gray-200: #e2e8f0;
-      --gray-600: #475569;
-      --gray-800: #1e293b;
-      --success: #0f766e;
-      --warning: #b45309;
-      --error: #b91c1c;
-      --radius: 1.25rem;
-      --radius-sm: 0.75rem;
-      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
-      --font-sans: 'Segoe UI', 'Inter', system-ui, -apple-system, 'Roboto', sans-serif;
-    }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    body {
-      font-family: var(--font-sans);
-      background: linear-gradient(145deg, #eff6ff 0%, #f0f9ff 100%);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 0.75rem;
-      margin: 0;
-    }
+        body {
+            font-family: 'Inter', 'Noto Sans Oriya', 'Noto Sans Devanagari', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
 
-    .app-container {
-      width: min(100%, 720px);
-      max-height: 95vh;
-      background: var(--white);
-      border-radius: 2rem;
-      box-shadow: var(--shadow);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.5);
-    }
+        /* Header Styles */
+        header {
+            background-color: var(--card-bg);
+            padding: 1rem 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
 
-    /* Header */
-    .header {
-      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
-      color: white;
-      padding: 1.25rem 1.5rem 1rem;
-      border-bottom-left-radius: 2rem;
-      border-bottom-right-radius: 2rem;
-    }
+        .logo-area h1 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
 
-    .header h1 {
-      font-size: 1.8rem;
-      font-weight: 700;
-      letter-spacing: -0.3px;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
+        .logo-area p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
 
-    .subtitle {
-      font-size: 0.95rem;
-      opacity: 0.9;
-      margin-top: 0.2rem;
-      font-weight: 400;
-      display: flex;
-      align-items: center;
-      gap: 0.25rem;
-    }
+        /* Status Banner */
+        .status-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            background-color: #e9e9ea;
+        }
 
-    /* Controls bar */
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.8rem 1rem;
-      background: var(--gray-50);
-      border-bottom: 1px solid var(--gray-200);
-    }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #5f6368;
+        }
 
-    .lang-select {
-      padding: 0.6rem 0.8rem;
-      border-radius: 2rem;
-      border: 1px solid var(--gray-200);
-      background: white;
-      font-weight: 500;
-      font-size: 0.9rem;
-      color: var(--gray-800);
-      flex: 1 1 auto;
-      min-width: 110px;
-      cursor: pointer;
-    }
+        /* Status States */
+        .status-ready { background-color: #e6f4ea; color: var(--success-color); }
+        .status-ready .status-dot { background-color: var(--success-color); }
+        
+        .status-listening { background-color: #feefe3; color: var(--warning-color); animation: pulse 1.5s infinite; }
+        .status-listening .status-dot { background-color: var(--warning-color); }
 
-    .btn {
-      background: white;
-      border: 1px solid var(--gray-200);
-      padding: 0.6rem 1rem;
-      border-radius: 2rem;
-      font-weight: 600;
-      font-size: 0.9rem;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.3rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      background: white;
-      color: var(--gray-800);
-      white-space: nowrap;
-      flex: 0 0 auto;
-    }
+        .status-thinking { background-color: #e8f0fe; color: var(--primary-color); }
+        .status-thinking .status-dot { background-color: var(--primary-color); animation: pulse 1s infinite; }
 
-    .btn-primary {
-      background: var(--primary-light);
-      border-color: var(--primary-light);
-      color: white;
-      box-shadow: 0 4px 8px rgba(37, 99, 235, 0.25);
-    }
+        .status-speaking { background-color: #f3e8ff; color: #681da8; }
+        .status-speaking .status-dot { background-color: #681da8; }
 
-    .btn-primary:hover {
-      background: var(--primary);
-    }
+        .status-error { background-color: #fce8e6; color: var(--error-color); }
+        .status-error .status-dot { background-color: var(--error-color); }
 
-    .btn-outline {
-      background: transparent;
-      border-color: var(--gray-300);
-    }
+        @keyframes pulse {
+            0% { opacity: 0.4; }
+            50% { opacity: 1; }
+            100% { opacity: 0.4; }
+        }
 
-    .btn:active {
-      transform: scale(0.96);
-    }
+        /* Layout Framework */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 1000px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 1rem;
+            gap: 1rem;
+            height: calc(100vh - 70px);
+        }
 
-    .btn:disabled {
-      opacity: 0.6;
-      pointer-events: none;
-    }
+        /* Chat History Panel */
+        .chat-container {
+            flex: 1;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow-y: auto;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
 
-    /* Status indicator */
-    .status-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.4rem 1rem;
-      font-size: 0.8rem;
-      background: var(--gray-100);
-      color: var(--gray-600);
-    }
+        .message {
+            max-width: 85%;
+            padding: 1rem 1.25rem;
+            border-radius: 16px;
+            position: relative;
+            word-wrap: break-word;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
 
-    .status-badge {
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
-      font-weight: 500;
-    }
+        .user-message {
+            background-color: var(--user-msg-bg);
+            color: #1557b0;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
 
-    .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: #9ca3af;
-    }
+        .ai-message {
+            background-color: var(--ai-msg-bg);
+            color: var(--text-main);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
 
-    .dot.listening { background: #f59e0b; animation: pulse 1s infinite; }
-    .dot.thinking { background: #6366f1; animation: pulse 1s infinite; }
-    .dot.speaking { background: #10b981; animation: pulse 1s infinite; }
-    .dot.error { background: #ef4444; }
-    .dot.ready { background: #3b82f6; }
+        .message-header {
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            justify-content: space-between;
+        }
 
-    @keyframes pulse { 0% { opacity: 0.6; transform: scale(0.9); } 50% { opacity: 1; transform: scale(1.2); } 100% { opacity: 0.6; transform: scale(0.9); } }
+        .ai-message .message-header { color: var(--primary-color); }
+        .user-message .message-header { color: #1c54b2; }
 
-    /* Chat area */
-    .chat-history {
-      flex: 1 1 auto;
-      overflow-y: auto;
-      padding: 1rem;
-      background: var(--white);
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      scroll-behavior: smooth;
-    }
+        .message-body {
+            font-size: 0.95rem;
+            white-space: pre-wrap;
+        }
 
-    .message {
-      max-width: 85%;
-      padding: 0.9rem 1.2rem;
-      border-radius: 1.5rem;
-      line-height: 1.5;
-      font-size: 0.95rem;
-      word-wrap: break-word;
-      position: relative;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-    }
+        .message-actions {
+            margin-top: 0.75rem;
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
 
-    .user-msg {
-      align-self: flex-end;
-      background: var(--primary-soft);
-      color: #0f172a;
-      border-bottom-right-radius: 0.4rem;
-    }
+        .msg-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            color: var(--text-muted);
+            transition: all 0.2s;
+        }
 
-    .ai-msg {
-      align-self: flex-start;
-      background: #f1f5f9;
-      color: #0f172a;
-      border-bottom-left-radius: 0.4rem;
-      white-space: pre-wrap;
-    }
+        .msg-btn:hover {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+        }
 
-    .copy-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      margin-left: 0.5rem;
-      font-size: 1rem;
-      opacity: 0.7;
-      float: right;
-    }
+        /* Controls & Form Panel */
+        .controls-container {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
 
-    /* Input area */
-    .input-area {
-      padding: 0.8rem 1rem 1rem;
-      background: var(--white);
-      border-top: 1px solid var(--gray-200);
-    }
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+            justify-content: space-between;
+        }
 
-    textarea {
-      width: 100%;
-      border: 1px solid var(--gray-200);
-      border-radius: 1.2rem;
-      padding: 0.9rem;
-      font-size: 1rem;
-      font-family: inherit;
-      resize: none;
-      margin-bottom: 0.6rem;
-      background: var(--gray-50);
-    }
+        .toolbar-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
 
-    .meta-info {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.75rem;
-      color: var(--gray-600);
-      margin-bottom: 0.6rem;
-      padding: 0 0.2rem;
-    }
+        select, button {
+            font-family: inherit;
+            font-size: 0.9rem;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background-color: #ffffff;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            min-height: 44px; /* Touch friendly */
+        }
 
-    .action-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      align-items: center;
-    }
+        select {
+            padding-right: 2rem;
+            appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%235f6368' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+            background-repeat: no-repeat;
+            background-position: right 0.5rem center;
+            background-size: 1.2rem;
+        }
 
-    @media (max-width: 480px) {
-      .btn {
-        padding: 0.5rem 0.8rem;
-        font-size: 0.8rem;
-      }
-      .header h1 {
-        font-size: 1.5rem;
-      }
-    }
-  </style>
+        select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px var(--primary-light);
+        }
+
+        /* Primary Action Button */
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+        }
+        .btn-primary:hover { background-color: var(--primary-hover); }
+        .btn-primary:disabled { background-color: #93b7eb; cursor: not-allowed; }
+
+        /* Secondary Voice Actions */
+        .btn-mic { background-color: #e6f4ea; color: var(--success-color); border-color: #ceead6; }
+        .btn-mic:hover { background-color: #ceead6; }
+        .btn-mic.listening { background-color: #fce8e6; color: var(--error-color); border-color: #fad2cf; }
+
+        .btn-stop-speak { background-color: #f3e8ff; color: #681da8; border-color: #e9d5ff; }
+        .btn-stop-speak:hover { background-color: #e9d5ff; }
+
+        .btn-danger { background-color: #fff; color: var(--text-muted); }
+        .btn-danger:hover { background-color: #fce8e6; color: var(--error-color); border-color: #fad2cf; }
+
+        /* Input Block */
+        .input-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            max-height: 200px;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            resize: vertical;
+        }
+
+        .counter-badge {
+            position: absolute;
+            bottom: -22px;
+            right: 5px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        /* Formatting helper metrics for AI Outputs */
+        .formatted-block {
+            margin-top: 0.5rem;
+            border-left: 3px solid var(--primary-color);
+            padding-left: 0.75rem;
+            background: var(--bg-color);
+            padding: 0.5rem 0.75rem;
+            border-radius: 0 6px 6px 0;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 600px) {
+            header { padding: 0.75rem 1rem; justify-content: center; text-align: center; }
+            .status-container { width: 100%; justify-content: center; }
+            main { height: auto; padding: 0.5rem; }
+            .chat-container { height: 400px; padding: 0.75rem; }
+            .message { max-width: 95%; }
+            .toolbar { flex-direction: column; align-items: stretch; }
+            .toolbar-group { width: 100%; }
+            .toolbar-group > * { flex: 1; min-width: 110px; }
+            textarea { min-height: 80px; }
+        }
+    </style>
 </head>
 <body>
-<div class="app-container">
-  <header class="header">
-    <h1>📘 GrammarMaster AI</h1>
-    <div class="subtitle">🗣️ Speak, Learn and Improve English</div>
-  </header>
 
-  <div class="controls">
-    <select id="languageSelect" class="lang-select">
-      <option value="en-US">🇬🇧 English</option>
-      <option value="hi-IN">🇮🇳 हिन्दी (Hindi)</option>
-      <option value="or-IN">🌾 ଓଡ଼ିଆ (Odia)</option>
-    </select>
-    <button id="micBtn" class="btn" title="Voice input (Speech-to-Text)">🎤 Speak</button>
-    <button id="askBtn" class="btn btn-primary">✨ Ask AI</button>
-    <button id="stopSpeakBtn" class="btn btn-outline">🔇 Stop Voice</button>
-    <button id="clearChatBtn" class="btn btn-outline">🗑️ Clear</button>
-  </div>
+    <header>
+        <div class="logo-area">
+            <h1>GrammarMaster AI</h1>
+            <p>Speak, Learn and Improve English</p>
+        </div>
+        <div id="statusBanner" class="status-container status-ready">
+            <span class="status-dot"></span>
+            <span id="statusText">Ready</span>
+        </div>
+    </header>
 
-  <div class="status-row">
-    <span class="status-badge"><span id="statusDot" class="dot ready"></span> <span id="statusText">Ready</span></span>
-    <span id="wordCharCount">Words: 0 | Chars: 0</span>
-  </div>
+    <main>
+        <div id="chatContainer" class="chat-container">
+            <div class="message ai-message">
+                <div class="message-header">GrammarMaster AI</div>
+                <div class="message-body">Namaskar! 🙏 I am GrammarMaster, your personal English Grammar Teacher. 
 
-  <div id="chatContainer" class="chat-history">
-    <!-- dynamic messages -->
-  </div>
+You can type or speak to me in **English, Odia (ଓଡ଼ିଆ), or Hindi (हिंदी)**. I am here to correct your grammar errors, build vocabulary, and guide you through school or competitive exam configurations.
 
-  <div class="input-area">
-    <textarea id="userInput" rows="3" placeholder="Type your sentence or grammar question... (Odia/Hindi/English welcome)"></textarea>
-    <div class="meta-info">
-      <span id="liveWordCount">Words: 0</span>
-      <span id="liveCharCount">Chars: 0</span>
-    </div>
-    <div class="action-row">
-      <button id="mobileAskBtn" class="btn btn-primary" style="flex:1;">✨ Ask GrammarMaster</button>
-    </div>
-  </div>
-</div>
+Choose your explanation language below, type/speak your passage, and click **Ask AI**!</div>
+            </div>
+        </div>
 
-<script>
-  (function() {
-    // ---------- CONFIG ----------
-    const API_KEY = "YOUR_GEMINI_API_KEY"; // <-- Replace with your actual Gemini API key
-    // Using the correct Gemini API v1 endpoint
-    const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent`;
-    
-    // ---------- DOM ELEMENTS ----------
-    const langSelect = document.getElementById('languageSelect');
-    const micBtn = document.getElementById('micBtn');
-    const askBtn = document.getElementById('askBtn');
-    const stopSpeakBtn = document.getElementById('stopSpeakBtn');
-    const clearChatBtn = document.getElementById('clearChatBtn');
-    const chatContainer = document.getElementById('chatContainer');
-    const userInput = document.getElementById('userInput');
-    const statusDot = document.getElementById('statusDot');
-    const statusText = document.getElementById('statusText');
-    const wordCharCount = document.getElementById('wordCharCount');
-    const liveWordCount = document.getElementById('liveWordCount');
-    const liveCharCount = document.getElementById('liveCharCount');
-    const mobileAskBtn = document.getElementById('mobileAskBtn');
+        <div class="controls-container">
+            <div class="input-wrapper">
+                <textarea id="userInput" placeholder="Type your sentence here, ask a grammar rule question, or use the 'Speak Input' mic..."></textarea>
+                <div class="counter-badge">
+                    <span id="charCount">Characters: 0</span>
+                    <span id="wordCount">Words: 0</span>
+                </div>
+            </div>
 
-    // ---------- STATE ----------
-    let chatHistory = [];           // { role: 'user'|'ai', text: string }
-    let currentStatus = 'ready';   // ready, listening, thinking, speaking, error
-    let speechSynth = window.speechSynthesis;
-    let speakingUtterance = null;
-    let recognition = null;
-    let isRecognizing = false;
+            <div class="toolbar">
+                <div class="toolbar-group">
+                    <select id="languageSelect" title="Select Input and Explanation Language">
+                        <option value="en-US">English Mode</option>
+                        <option value="or-IN">Odia Mode (ଓଡ଼ିଆ)</option>
+                        <option value="hi-IN">Hindi Mode (हिंदी)</option>
+                    </select>
+                    
+                    <button id="micBtn" class="btn-mic" title="Start Voice Capture">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M5 3a3 3 0 0 1 6 0v5a3 3 0 0 1-6 0V3z"/><path d="M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5z"/></svg>
+                        <span>Speak Input</span>
+                    </button>
+                    
+                    <button id="stopSpeakBtn" class="btn-stop-speak" title="Halt current Voice Synthesizer output" style="display:none;">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M6 3.5a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5zm4 0a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5z"/></svg>
+                        <span>Stop Speaking</span>
+                    </button>
+                </div>
 
-    // ---------- SYSTEM PROMPT ----------
-    const SYSTEM_PROMPT = `You are GrammarMaster, an expert English Grammar Teacher. 
-Your goals: Teach grammar clearly, correct mistakes, improve vocabulary, writing, speaking. Prepare students for exams. Adapt for beginners.
+                <div class="toolbar-group">
+                    <button id="clearBtn" class="btn-danger" title="Clear local workspace and history logs">Clear Chat</button>
+                    <button id="submitBtn" class="btn-primary" title="Transmit to Gemini AI Engine">
+                        <span>Ask AI</span>
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11zM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07zm-.007.622-1.557 5.07a.5.5 0 0 1-.962-.1c-.135-.86-.615-3.864-.615-3.864l5.134-1.106z"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
 
-CRITICAL RULES:
-- User may write in Odia, Hindi, or English. Understand all.
-- Grammar teaching primarily teaches English.
-- Explanations MUST be given in the language selected by the user (Odia, Hindi, or English). If Odia selected, explain in Odia. If Hindi, in Hindi. If English, in English.
-- When correcting sentences, show: Original Sentence, Corrected Sentence, Explanation (up to 5 lines), Grammar Rule, Why correct, 3 similar examples, Common mistakes, Memory tip.
-- For grammar questions: Definition, Rule, Examples, Practice exercise.
-- For vocabulary: Meaning, Pronunciation, Synonyms, Antonyms, Example sentences.
-- For spoken English: Natural conversational, Formal, Informal versions.
-- Always finish with: "Practice Challenge:" and a short exercise.
-Keep responses structured, friendly, and educational.`;
+    <script>
+        /*****************************************************************
+         * CONFIGURATION & STATE MANUFACTURE
+         *****************************************************************/
+        // STABLE PRODUCTION REPLACEMENT INTERFACE FOR GEMINI API
+        const API_KEY = "AQ.Ab8RN6IUXmC1VtNHpbGyYM0jP_gVDYO9Ynl2jAoyp0gTttPYZA"; 
+        const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`;
 
-    // ---------- HELPER: UPDATE STATUS ----------
-    function setStatus(status, text = '') {
-      currentStatus = status;
-      statusDot.className = 'dot ' + status;
-      statusText.textContent = text || status.charAt(0).toUpperCase() + status.slice(1);
-    }
+        // Global Architectural States
+        let recognition = null;
+        let syntheticSpeechUtterance = null;
+        let conversationLogs = [];
 
-    // ---------- LOCAL STORAGE ----------
-    function saveChatToStorage() {
-      try {
-        localStorage.setItem('grammarmaster_chat', JSON.stringify(chatHistory));
-      } catch (e) {}
-    }
+        // DOM Pointers
+        const statusBanner = document.getElementById('statusBanner');
+        const statusText = document.getElementById('statusText');
+        const chatContainer = document.getElementById('chatContainer');
+        const userInput = document.getElementById('userInput');
+        const languageSelect = document.getElementById('languageSelect');
+        const micBtn = document.getElementById('micBtn');
+        const stopSpeakBtn = document.getElementById('stopSpeakBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const charCountDisplay = document.getElementById('charCount');
+        const wordCountDisplay = document.getElementById('wordCount');
 
-    function loadChatFromStorage() {
-      try {
-        const stored = localStorage.getItem('grammarmaster_chat');
-        if (stored) {
-          chatHistory = JSON.parse(stored);
-        }
-      } catch (e) {
-        chatHistory = [];
-      }
-      if (!chatHistory || chatHistory.length === 0) {
-        chatHistory = [];
-      }
-    }
+        // Master Educational Teacher Instructions
+        const SYSTEM_PROMPT = `You are GrammarMaster, an expert English Grammar Teacher.
+Your goals:
+1. Teach grammar clearly and accurately.
+2. Correct grammar mistakes.
+3. Improve vocabulary.
+4. Improve writing.
+5. Improve speaking skills.
+6. Help students prepare for school exams (BSE Odisha, CHSE, CBSE) and competitive exams.
+7. Adapt explanations for beginners.
 
-    // ---------- RENDER CHAT ----------
-    function renderChat() {
-      if (!chatContainer) return;
-      chatContainer.innerHTML = '';
-      chatHistory.forEach((msg, index) => {
-        const msgDiv = document.createElement('div');
-        msgDiv.className = `message ${msg.role === 'user' ? 'user-msg' : 'ai-msg'}`;
-        
-        const textSpan = document.createElement('span');
-        textSpan.textContent = msg.text;
-        msgDiv.appendChild(textSpan);
-        
-        if (msg.role === 'ai') {
-          const copyBtn = document.createElement('button');
-          copyBtn.className = 'copy-btn';
-          copyBtn.innerHTML = '📋';
-          copyBtn.title = 'Copy response';
-          copyBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            navigator.clipboard.writeText(msg.text).then(() => {
-              copyBtn.innerHTML = '✅';
-              setTimeout(() => { copyBtn.innerHTML = '📋'; }, 1200);
+Multilingual Response Architecture Constraints:
+- The user may converse/input text or spoken language in English, Odia (ଓଡ଼ିଆ), or Hindi (हिंदी).
+- You must always process and target explanations using the translation rules matched to the selected language parameter.
+- If the user choice language state is Odia ('or-IN'), formulate the core teaching explanations, logic, breakdown summaries, definitions, rules, and memory tips primarily in Odia language script, while ensuring English targeted sentences and variations remain cleanly formatted in English text.
+- If the choice language state is Hindi ('hi-IN'), formulate explanations, rules, and breakdown tips in Hindi language text.
+- If the choice language state is English ('en-US'), provide all explanations completely in English.
+
+Formatting Instruction Schemas based on Input Type:
+
+CASE A: When correcting specific sentences:
+Show exactly:
+Original Sentence: [Sentence provided]
+Corrected Sentence: [Perfected Form]
+Explanation: [Provide up to 5 clear lines explaining why changes occurred]
+
+Then structuralize exactly using distinct headings or clear lines:
+- Grammar Rule: [The underlying operational rule]
+- Why it is correct: [Grammar framework details]
+- 3 Similar Examples: [Short bullet points matching structural layout]
+- Common Mistakes: [What typical Indian/Odia students do wrong here]
+- Memory Tip: [An easy phrase or mental note to remember this rule]
+
+CASE B: For general grammar framework questions:
+Show exactly:
+- Definition: [Meaning]
+- Rule: [Syntactic framework parameters]
+- Examples: [Detailed illustrative clear targets]
+- Practice Exercise: [Provide a brief quiz/interactive query setup]
+
+CASE C: For Vocabulary lookups:
+Show exactly:
+- Meaning: [Clear definition]
+- Pronunciation: [Readable phonics or guides]
+- Synonyms: [Alternative words]
+- Antonyms: [Opposite words]
+- Example Sentences: [Contextual structures]
+
+CASE D: For Spoken English requests/conversational checks:
+Show exactly:
+- Natural Conversational Version: [Everyday native execution]
+- Formal Version: [Corporate/Exam standard execution]
+- Informal Version: [Casual/Friend circle execution]
+
+Always, without exception, append this exact line at the conclusion of every turn:
+Practice Challenge: [Provide a hyper-targeted assignment sentence or query prompt for the student to attempt in response]`;
+
+        /*****************************************************************
+         * LIFECYCLE & INITIALIZATION
+         *****************************************************************/
+        window.addEventListener('DOMContentLoaded', () => {
+            initializeSpeechToText();
+            loadChatHistory();
+            attachEventHandlers();
+            updateTextMetrics();
+        });
+
+        function attachEventHandlers() {
+            userInput.addEventListener('input', updateTextMetrics);
+            submitBtn.addEventListener('click', handleUserSubmission);
+            micBtn.addEventListener('click', toggleVoiceCapture);
+            stopSpeakBtn.addEventListener('click', haltVoiceSynthesis);
+            clearBtn.addEventListener('click', purgeChatHistory);
+            
+            // Re-bind enter keys safely (Ctrl/Cmd + Enter to trigger)
+            userInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleUserSubmission();
+                }
             });
-          });
-          msgDiv.appendChild(copyBtn);
         }
-        chatContainer.appendChild(msgDiv);
-      });
-      autoScroll();
-    }
 
-    function autoScroll() {
-      if (chatContainer) {
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-      }
-    }
-
-    function addMessage(role, text) {
-      chatHistory.push({ role, text });
-      saveChatToStorage();
-      renderChat();
-    }
-
-    // ---------- COUNT HELPER ----------
-    function updateCounts() {
-      const text = userInput.value.trim();
-      const words = text.length ? text.split(/\s+/).filter(w => w.length > 0).length : 0;
-      const chars = text.length;
-      liveWordCount.textContent = `Words: ${words}`;
-      liveCharCount.textContent = `Chars: ${chars}`;
-      wordCharCount.textContent = `Words: ${words} | Chars: ${chars}`;
-    }
-
-    userInput.addEventListener('input', updateCounts);
-
-    // ---------- CLEAR CHAT ----------
-    function clearChat() {
-      chatHistory = [];
-      saveChatToStorage();
-      renderChat();
-    }
-
-    // ---------- STOP SPEAKING ----------
-    function stopSpeaking() {
-      if (speechSynth.speaking || speechSynth.pending) {
-        speechSynth.cancel();
-      }
-      if (currentStatus === 'speaking') {
-        setStatus('ready', 'Ready');
-      }
-    }
-
-    // ---------- TEXT TO SPEECH ----------
-    function speakText(text, langCode) {
-      stopSpeaking();
-      if (!text || text.length === 0) return;
-      // Map selected language to speech synthesis language
-      let speechLang = 'en-US';
-      if (langCode === 'hi-IN') speechLang = 'hi-IN';
-      else if (langCode === 'or-IN') speechLang = 'or-IN'; // Odia may not be fully supported, fallback handled
-      else speechLang = 'en-US';
-
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = speechLang;
-      utterance.rate = 0.95;
-      utterance.pitch = 1.0;
-      
-      utterance.onstart = () => {
-        setStatus('speaking', 'Speaking...');
-      };
-      utterance.onend = () => {
-        setStatus('ready', 'Ready');
-        speakingUtterance = null;
-      };
-      utterance.onerror = (e) => {
-        console.warn('Speech error:', e);
-        setStatus('ready', 'Ready');
-        speakingUtterance = null;
-      };
-      speakingUtterance = utterance;
-      speechSynth.speak(utterance);
-    }
-
-    // ---------- GEMINI API CALL (FIXED) ----------
-    async function callGemini(promptText, selectedLang) {
-      // Validate API key first
-      if (!API_KEY || API_KEY === "AQ.Ab8RN6IUXmC1VtNHpbGyYM0jP_gVDYO9Ynl2jAoyp0gTttPYZA") {
-        throw new Error("Please replace 'YOUR_GEMINI_API_KEY' with your actual Gemini API key in the code.");
-      }
-
-      // Build messages with system prompt and language instruction
-      const languageName = selectedLang === 'hi-IN' ? 'Hindi' : (selectedLang === 'or-IN' ? 'Odia' : 'English');
-      const fullPrompt = `${SYSTEM_PROMPT}\n\nCurrent selected language for explanation: ${languageName}. User message: "${promptText}"`;
-      
-      const requestBody = {
-        contents: [
-          {
-            parts: [{ text: fullPrompt }]
-          }
-        ],
-        generationConfig: {
-          temperature: 0.7,
-          maxOutputTokens: 800,
+        /*****************************************************************
+         * UI STATUS ENGINE
+         *****************************************************************/
+        function updateStatus(state, customText = "") {
+            statusBanner.className = "status-container";
+            
+            switch(state) {
+                case 'ready':
+                    statusBanner.classList.add('status-ready');
+                    statusText.innerText = customText || "Ready";
+                    break;
+                case 'listening':
+                    statusBanner.classList.add('status-listening');
+                    statusText.innerText = customText || "Listening to Voice...";
+                    break;
+                case 'thinking':
+                    statusBanner.classList.add('status-thinking');
+                    statusText.innerText = customText || "Thinking...";
+                    break;
+                case 'speaking':
+                    statusBanner.classList.add('status-speaking');
+                    statusText.innerText = customText || "Speaking...";
+                    break;
+                case 'error':
+                    statusBanner.classList.add('status-error');
+                    statusText.innerText = customText || "System Error";
+                    break;
+            }
         }
-      };
 
-      // Use fetch with API key as query parameter (correct method for Gemini API)
-      const response = await fetch(`${GEMINI_API_URL}?key=${API_KEY}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody)
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        const errorMessage = errorData.error?.message || `HTTP error ${response.status}`;
-        throw new Error(errorMessage);
-      }
-
-      const data = await response.json();
-      const candidateText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-      if (!candidateText) {
-        throw new Error('No response generated. Please try again.');
-      }
-      return candidateText.trim();
-    }
-
-    // ---------- HANDLE ASK AI ----------
-    async function handleAskAI() {
-      const query = userInput.value.trim();
-      if (!query) {
-        alert('Please type a sentence or question.');
-        return;
-      }
-      const selectedLang = langSelect.value;
-      
-      addMessage('user', query);
-      userInput.value = '';
-      updateCounts();
-      
-      setStatus('thinking', 'Thinking...');
-      try {
-        const aiResponse = await callGemini(query, selectedLang);
-        addMessage('ai', aiResponse);
-        setStatus('ready', 'Ready');
-      } catch (error) {
-        console.error('Gemini API error:', error);
-        let errorMsg = error.message;
-        // Provide more user-friendly error messages
-        if (errorMsg.includes('API key not valid')) {
-          errorMsg = 'Invalid API key. Please check your Gemini API key and try again.';
-        } else if (errorMsg.includes('404')) {
-          errorMsg = 'API endpoint not found. Please check the model name.';
-        } else if (errorMsg.includes('429')) {
-          errorMsg = 'Too many requests. Please wait a moment and try again.';
+        function updateTextMetrics() {
+            const text = userInput.value.trim();
+            charCountDisplay.innerText = `Characters: ${text.length}`;
+            wordCountDisplay.innerText = `Words: ${text ? text.split(/\s+/).length : 0}`;
         }
-        addMessage('ai', `⚠️ Error: ${errorMsg}`);
-        setStatus('error', 'Error');
-        setTimeout(() => setStatus('ready', 'Ready'), 3000);
-      }
-    }
 
-    // ---------- SPEECH TO TEXT (Web Speech API) ----------
-    function setupSpeechRecognition() {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SpeechRecognition) {
-        alert('Speech recognition not supported in this browser. Please use Chrome or Edge.');
-        micBtn.disabled = true;
-        return;
-      }
-
-      recognition = new SpeechRecognition();
-      recognition.continuous = false;
-      recognition.interimResults = false;
-      recognition.maxAlternatives = 1;
-
-      recognition.onstart = () => {
-        isRecognizing = true;
-        setStatus('listening', 'Listening...');
-        micBtn.textContent = '🔴 Listening';
-      };
-
-      recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        userInput.value = transcript;
-        updateCounts();
-        stopRecognition();
-      };
-
-      recognition.onerror = (event) => {
-        console.error('Speech error:', event.error);
-        setStatus('error', 'Voice error');
-        stopRecognition();
-        setTimeout(() => setStatus('ready', 'Ready'), 2000);
-      };
-
-      recognition.onend = () => {
-        stopRecognition();
-      };
-    }
-
-    function startRecognition() {
-      if (!recognition) {
-        setupSpeechRecognition();
-      }
-      if (!recognition) return;
-      if (isRecognizing) {
-        stopRecognition();
-        return;
-      }
-      const lang = langSelect.value;
-      recognition.lang = lang;
-      try {
-        recognition.start();
-      } catch (e) {
-        console.warn('Recognition start error', e);
-      }
-    }
-
-    function stopRecognition() {
-      if (recognition && isRecognizing) {
-        try { recognition.stop(); } catch (e) {}
-      }
-      isRecognizing = false;
-      micBtn.textContent = '🎤 Speak';
-      if (currentStatus === 'listening') setStatus('ready', 'Ready');
-    }
-
-    // ---------- EVENT LISTENERS ----------
-    micBtn.addEventListener('click', startRecognition);
-    
-    askBtn.addEventListener('click', handleAskAI);
-    mobileAskBtn.addEventListener('click', handleAskAI);
-    
-    stopSpeakBtn.addEventListener('click', stopSpeaking);
-    
-    clearChatBtn.addEventListener('click', () => {
-      if (confirm('Clear all chat history?')) {
-        clearChat();
-      }
-    });
-
-    // Allow Enter to send (Shift+Enter new line)
-    userInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        handleAskAI();
-      }
-    });
-
-    // Speak AI message on double-click
-    chatContainer.addEventListener('dblclick', (e) => {
-      const msgDiv = e.target.closest('.ai-msg');
-      if (msgDiv) {
-        const text = msgDiv.querySelector('span')?.textContent || '';
-        if (text) {
-          const selectedLang = langSelect.value;
-          speakText(text, selectedLang);
+        /*****************************************************************
+         * CHAT HISTORICAL PERSISTENCE (LOCALSTORAGE)
+         *****************************************************************/
+        function saveChatHistory() {
+            localStorage.setItem('grammarmaster_history', JSON.stringify(conversationLogs));
         }
-      }
-    });
 
-    // Initialize
-    loadChatFromStorage();
-    renderChat();
-    updateCounts();
-    setStatus('ready', 'Ready');
-    setupSpeechRecognition(); // pre-setup
+        function loadChatHistory() {
+            const savedData = localStorage.getItem('grammarmaster_history');
+            if (savedData) {
+                try {
+                    conversationLogs = JSON.parse(savedData);
+                    conversationLogs.forEach(msg => {
+                        appendMessageToUI(msg.role === 'user' ? 'USER' : 'AI', msg.text, false);
+                    });
+                } catch (e) {
+                    console.error("Failed structural loading of historical chat logs", e);
+                    localStorage.removeItem('grammarmaster_history');
+                }
+            }
+        }
 
-    // Cleanup on page unload
-    window.addEventListener('beforeunload', () => {
-      stopSpeaking();
-      if (recognition && isRecognizing) recognition.stop();
-    });
+        function purgeChatHistory() {
+            if (confirm("Are you sure you want to clear the entire conversation history?")) {
+                haltVoiceSynthesis();
+                conversationLogs = [];
+                localStorage.removeItem('grammarmaster_history');
+                chatContainer.innerHTML = `
+                    <div class="message ai-message">
+                        <div class="message-header">GrammarMaster AI</div>
+                        <div class="message-body">History cleared successfully. What grammar topic or sentence would you like to verify now?</div>
+                    </div>
+                `;
+                updateStatus('ready');
+            }
+        }
 
-    // Validate API key on load and show warning if not set
-    if (API_KEY === "YOUR_GEMINI_API_KEY") {
-      console.warn('⚠️ Please replace YOUR_GEMINI_API_KEY with your actual Gemini API key');
-      addMessage('ai', '👋 Welcome to GrammarMaster AI! Please replace "YOUR_GEMINI_API_KEY" in the code with your actual Gemini API key to get started. You can get a free API key from https://aistudio.google.com/apikey');
-    }
+        /*****************************************************************
+         * UI RENDER COMPONENT
+         *****************************************************************/
+        function appendMessageToUI(sender, text, shouldScroll = true) {
+            const msgNode = document.createElement('div');
+            msgNode.classList.add('message', sender === 'USER' ? 'user-message' : 'ai-message');
+            
+            const header = document.createElement('div');
+            header.classList.add('message-header');
+            header.innerText = sender === 'USER' ? 'You' : 'GrammarMaster AI';
+            
+            const body = document.createElement('div');
+            body.classList.add('message-body');
+            
+            // Format systemic items like "Original Sentence", "Corrected Sentence" natively with clean breaks
+            body.innerHTML = parseMarkdownFormatting(text);
+            
+            msgNode.appendChild(header);
+            msgNode.appendChild(body);
 
-  })();
-</script>
+            // Add utilities to AI Responses
+            if (sender === 'AI') {
+                const actions = document.createElement('div');
+                actions.classList.add('message-actions');
+
+                const copyBtn = document.createElement('button');
+                copyBtn.classList.add('msg-btn');
+                copyBtn.innerHTML = `<span>Copy</span>`;
+                copyBtn.onclick = () => {
+                    navigator.clipboard.writeText(text);
+                    copyBtn.innerText = "Copied!";
+                    setTimeout(() => copyBtn.innerText = "Copy", 2000);
+                };
+
+                const readBtn = document.createElement('button');
+                readBtn.classList.add('msg-btn');
+                readBtn.innerHTML = `<span>Speak</span>`;
+                readBtn.onclick = () => executeVoiceSynthesis(text);
+
+                actions.appendChild(copyBtn);
+                actions.appendChild(readBtn);
+                msgNode.appendChild(actions);
+            }
+
+            chatContainer.appendChild(msgNode);
+            
+            if (shouldScroll) {
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+        }
+
+        // Minimalist parsing of markdown styling vectors to keep standalone code pure
+        function parseMarkdownFormatting(rawText) {
+            let processed = rawText
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/^- (.*)$/gme, '<li>$1</li>');
+                
+            return processed;
+        }
+
+        /*****************************************************************
+         * WEB SPEECH ENGINE (SPEECH-TO-TEXT)
+         *****************************************************************/
+        function initializeSpeechToText() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                console.warn("Web Speech API Recognition structural drivers missing on this device/browser variant.");
+                micBtn.style.display = "none";
+                return;
+            }
+
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+
+            recognition.onstart = () => {
+                updateStatus('listening', 'Listening to voice...');
+                micBtn.classList.add('listening');
+                micBtn.querySelector('span').innerText = "Stop Capturing";
+            };
+
+            recognition.onerror = (event) => {
+                console.error("Speech Recognition processing variant failure", event.error);
+                updateStatus('error', `Voice Error: ${event.error}`);
+                stopMicTrackingState();
+            };
+
+            recognition.onend = () => {
+                stopMicTrackingState();
+            };
+
+            recognition.onresult = (event) => {
+                const speechResult = event.results[0][0].transcript;
+                if (speechResult) {
+                    const workingSpaceText = userInput.value.trim();
+                    userInput.value = workingSpaceText ? `${workingSpaceText} ${speechResult}` : speechResult;
+                    updateTextMetrics();
+                }
+            };
+        }
+
+        function toggleVoiceCapture() {
+            if (!recognition) {
+                alert("Speech recognition features are unsupported on this environment or browser profile.");
+                return;
+            }
+
+            if (statusBanner.classList.contains('status-listening')) {
+                recognition.stop();
+            } else {
+                haltVoiceSynthesis();
+                recognition.lang = languageSelect.value;
+                try {
+                    recognition.start();
+                } catch (e) {
+                    console.error("Error launching system capture stack", e);
+                }
+            }
+        }
+
+        function stopMicTrackingState() {
+            micBtn.classList.remove('listening');
+            micBtn.querySelector('span').innerText = "Speak Input";
+            if (statusText.innerText.includes("Listening")) {
+                updateStatus('ready');
+            }
+        }
+
+        /*****************************************************************
+         * SPEECH SYNTHESIS ENGINE (TEXT-TO-SPEECH)
+         *****************************************************************/
+        function executeVoiceSynthesis(text) {
+            haltVoiceSynthesis();
+
+            if (!('speechSynthesis' in window)) {
+                alert("Text-to-speech framework not supported on this platform.");
+                return;
+            }
+
+            // Remove internal technical tags or formatting symbols from presentation speech audio
+            const audioCleanedString = text.replace(/[*#_`\-]/g, '').trim();
+            if (!audioCleanedString) return;
+
+            syntheticSpeechUtterance = new SpeechSynthesisUtterance(audioCleanedString);
+            
+            // Map configuration targets to languages natively handled by target system voices
+            const mappedLangSelection = languageSelect.value;
+            syntheticSpeechUtterance.lang = mappedLangSelection;
+
+            syntheticSpeechUtterance.onstart = () => {
+                updateStatus('speaking', 'Speaking Response...');
+                stopSpeakBtn.style.display = "inline-flex";
+            };
+
+            syntheticSpeechUtterance.onend = () => {
+                updateStatus('ready');
+                stopSpeakBtn.style.display = "none";
+            };
+
+            syntheticSpeechUtterance.onerror = (e) => {
+                console.error("TTS processing interface failure fault", e);
+                updateStatus('ready');
+                stopSpeakBtn.style.display = "none";
+            };
+
+            window.speechSynthesis.speak(syntheticSpeechUtterance);
+        }
+
+        function haltVoiceSynthesis() {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            }
+            stopSpeakBtn.style.display = "none";
+            if (statusText.innerText.includes("Speaking")) {
+                updateStatus('ready');
+            }
+        }
+
+        /*****************************************************************
+         * WORKFLOW TRANSACTION CONTROLLER & GEMINI API CORE
+         *****************************************************************/
+        async function handleUserSubmission() {
+            const textRawContent = userInput.value.trim();
+            if (!textRawContent) return;
+
+            if (API_KEY === "YOUR_GEMINI_API_KEY") {
+                alert("Please initialize your actual Gemini API authorization key vector configuration string inside the source layout framework constants.");
+                return;
+            }
+
+            haltVoiceSynthesis();
+            
+            // Frame elements onto UI pipeline
+            appendMessageToUI('USER', textRawContent);
+            userInput.value = "";
+            updateTextMetrics();
+
+            // Cache historic sequence payload layout arrays
+            conversationLogs.push({ role: 'user', text: textRawContent });
+            saveChatHistory();
+
+            updateStatus('thinking', 'GrammarMaster is thinking...');
+            setControlEngagementState(false);
+
+            try {
+                const responseText = await queryGeminiProEngine(textRawContent);
+                
+                // Print response parameters
+                appendMessageToUI('AI', responseText);
+                conversationLogs.push({ role: 'model', text: responseText });
+                saveChatHistory();
+                
+                updateStatus('ready');
+                
+                // Automatic vocalization callback sequence triggered 
+                executeVoiceSynthesis(responseText);
+
+            } catch (error) {
+                console.error("Primary runtime endpoint framework error:", error);
+                updateStatus('error', 'Error compiling AI response context.');
+                appendMessageToUI('AI', `System Connection Timeout Error: ${error.message || 'Please check your internet network settings or verify your API key validation profile status.'}`);
+            } finally {
+                setControlEngagementState(true);
+            }
+        }
+
+        function setControlEngagementState(activeState) {
+            submitBtn.disabled = !activeState;
+            userInput.disabled = !activeState;
+            languageSelect.disabled = !activeState;
+            if (activeState) {
+                userInput.focus();
+            }
+        }
+
+        async function queryGeminiProEngine(prompt) {
+            const currentUISelectedLanguage = languageSelect.value;
+            let languageExplicitContext = "English";
+            if (currentUISelectedLanguage === 'or-IN') languageExplicitContext = "Odia (ଓଡ଼ିଆ)";
+            if (currentUISelectedLanguage === 'hi-IN') languageExplicitContext = "Hindi (हिंदी)";
+
+            // Inject the runtime context criteria into systemic payload instructions dynamically
+            const tailoredSystemInstructions = `${SYSTEM_PROMPT}\nCURRENT CONTEXT: The user has selected a processing preference for ${languageExplicitContext} language explanations. Custom translate framework explanations to align precisely to this target state requirement text.`;
+
+            // Transform chat history array into Gemini's payload format
+            // We append the system prompt context directly into the conversation payload to ensure robust rule compliance across all variants.
+            const apiContentsPayload = [
+                {
+                    role: 'user',
+                    parts: [{ text: `${tailoredSystemInstructions}\n\nUnderstood. Start interacting here.` }]
+                },
+                {
+                    role: 'model',
+                    parts: [{ text: "I am ready. I will follow your strict layout frameworks and explain grammar elements optimized dynamically according to chosen localization language variables." }]
+                }
+            ];
+
+            // Append stored conversation turns safely
+            conversationLogs.forEach(entry => {
+                apiContentsPayload.push({
+                    role: entry.role === 'user' ? 'user' : 'model',
+                    parts: [{ text: entry.text }]
+                });
+            });
+
+            const requestBody = {
+                contents: apiContentsPayload,
+                generationConfig: {
+                    temperature: 0.3,
+                    maxOutputTokens: 2048
+                }
+            };
+
+            const response = await fetch(GEMINI_API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestBody)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.error?.message || `HTTP Service Exception error code details returned: ${response.status}`);
+            }
+
+            const data = await response.json();
+            
+            // Secure response text extraction tracking pathways
+            if (data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
+                return data.candidates[0].content.parts[0].text;
+            } else {
+                throw new Error("Invalid structure payload layout mapping schema exception encountered from remote node server.");
+            }
+        }
+    </script>
 </body>
 </html>
