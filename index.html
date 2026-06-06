@@ -1,883 +1,833 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GrammarMaster AI - Speak, Learn and Improve English</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;700&family=Noto+Sans+Oriya:wght@400;500;700&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --primary-color: #1a73e8;
-            --primary-hover: #1557b0;
-            --primary-light: #e8f0fe;
-            --bg-color: #f8f9fa;
-            --card-bg: #ffffff;
-            --text-main: #3c4043;
-            --text-muted: #5f6368;
-            --border-color: #dadce0;
-            --user-msg-bg: #e8f0fe;
-            --ai-msg-bg: #ffffff;
-            --success-color: #137333;
-            --error-color: #c5221f;
-            --warning-color: #b06000;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GrammarMaster AI – Speak, Learn and Improve English</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Noto+Sans+Oriya:wght@400;500;700&family=Noto+Sans+Devanagari:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #faf8f4;
+  --card:     #ffffff;
+  --parch:    #f3efe6;
+  --teal:     #0f766e;
+  --teal-dk:  #0d5c56;
+  --teal-lt:  #d0f4ef;
+  --amber:    #b45309;
+  --amber-lt: #fef3c7;
+  --red-lt:   #fee2e2;
+  --red:      #b91c1c;
+  --grn-lt:   #dcfce7;
+  --grn:      #15803d;
+  --blu-lt:   #eff6ff;
+  --blu:      #1d4ed8;
+  --gold:     #854d0e;
+  --gold-lt:  #fefce8;
+  --orn-lt:   #fff7ed;
+  --orn:      #9a3412;
+  --prp-lt:   #f3e8ff;
+  --prp:      #6d28d9;
+  --t1:       #1c1917;
+  --t2:       #44403c;
+  --t3:       #78716c;
+  --brd:      #e7e0d5;
+  --brd2:     #d4c9bc;
+  --shad:     0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);
+  --shad2:    0 4px 8px rgba(0,0,0,.06),0 2px 4px rgba(0,0,0,.04);
+  --r:        10px;
+  --rs:       7px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:'DM Sans','Noto Sans Oriya','Noto Sans Devanagari',sans-serif;
+  background:var(--bg);
+  color:var(--t1);
+  display:flex;
+  flex-direction:column;
+  height:100vh;
+  overflow:hidden;
+}
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+/* ─── HEADER ──────────────────────────────────────── */
+header{
+  flex-shrink:0;
+  background:var(--card);
+  border-bottom:1px solid var(--brd);
+  padding:.6rem 1.25rem;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:1rem;
+  box-shadow:var(--shad);
+  z-index:10;
+}
+.logo-wrap{display:flex;align-items:center;gap:.65rem}
+.logo-badge{
+  width:38px;height:38px;border-radius:9px;
+  background:linear-gradient(135deg,var(--teal) 0%,#0891b2 100%);
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-family:'Lora',serif;font-size:1.15rem;font-weight:700;
+  flex-shrink:0;box-shadow:0 2px 6px rgba(15,118,110,.3);
+}
+.logo-title{font-family:'Lora',serif;font-size:1.15rem;font-weight:700;color:var(--t1);letter-spacing:-.01em}
+.logo-sub{font-size:.72rem;color:var(--t3);font-weight:300;margin-top:1px}
 
-        body {
-            font-family: 'Inter', 'Noto Sans Oriya', 'Noto Sans Devanagari', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            line-height: 1.6;
-        }
+/* status pill */
+.status{
+  display:flex;align-items:center;gap:.45rem;
+  padding:.3rem .8rem;border-radius:100px;
+  font-size:.78rem;font-weight:500;
+  background:var(--parch);color:var(--t3);
+  border:1px solid var(--brd);
+  transition:all .25s ease;white-space:nowrap;
+}
+.sdot{width:7px;height:7px;border-radius:50%;background:var(--t3);transition:all .25s}
+.s-ready{background:var(--grn-lt);color:var(--grn);border-color:#bbf7d0}
+.s-ready .sdot{background:var(--grn)}
+.s-listen{background:var(--amber-lt);color:var(--amber);border-color:#fde68a;animation:spulse 1.2s ease infinite}
+.s-listen .sdot{background:var(--amber)}
+.s-think{background:var(--blu-lt);color:var(--blu);border-color:#bfdbfe}
+.s-think .sdot{background:var(--blu);animation:dblink 1s ease infinite}
+.s-speak{background:var(--prp-lt);color:var(--prp);border-color:#ddd6fe}
+.s-speak .sdot{background:var(--prp);animation:dblink .8s ease infinite}
+.s-err{background:var(--red-lt);color:var(--red);border-color:#fecaca}
+.s-err .sdot{background:var(--red)}
+@keyframes spulse{0%,100%{opacity:.8}50%{opacity:1}}
+@keyframes dblink{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}
 
-        /* Header Styles */
-        header {
-            background-color: var(--card-bg);
-            padding: 1rem 1.5rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
+/* ─── MAIN 2-COLUMN GRID ────────────────────────────── */
+.main-grid{
+  flex:1;
+  display:grid;
+  grid-template-columns:300px 1fr;
+  grid-template-rows:1fr auto;
+  overflow:hidden;
+  min-height:0;
+}
 
-        .logo-area h1 {
-            color: var(--primary-color);
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
+/* ─── CHAT PANEL (left) ─────────────────────────────── */
+.chat-panel{
+  grid-column:1;grid-row:1/3;
+  background:var(--parch);
+  border-right:1px solid var(--brd);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+}
+.panel-hdr{
+  padding:.65rem 1rem;
+  font-size:.65rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);
+  border-bottom:1px solid var(--brd);
+  background:var(--card);
+  display:flex;align-items:center;gap:.45rem;flex-shrink:0;
+}
+.panel-hdr svg{opacity:.6}
+.chat-msgs{flex:1;overflow-y:auto;padding:.75rem;display:flex;flex-direction:column;gap:.5rem;min-height:0}
+.chat-msgs::-webkit-scrollbar{width:3px}
+.chat-msgs::-webkit-scrollbar-track{background:transparent}
+.chat-msgs::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:3px}
 
-        .logo-area p {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-        }
+/* chat bubbles */
+.bubble{
+  max-width:90%;padding:.55rem .8rem;
+  border-radius:13px;font-size:.8rem;line-height:1.5;
+  word-wrap:break-word;
+}
+.b-user{background:var(--teal);color:#fff;align-self:flex-end;border-bottom-right-radius:3px}
+.b-ai{background:var(--card);color:var(--t2);align-self:flex-start;border-bottom-left-radius:3px;border:1px solid var(--brd)}
+.blbl{font-size:.62rem;font-weight:600;opacity:.6;margin-bottom:.2rem;text-transform:uppercase;letter-spacing:.04em}
+.btxt{white-space:pre-wrap}
 
-        /* Status Banner */
-        .status-container {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.85rem;
-            font-weight: 600;
-            padding: 0.4rem 0.8rem;
-            border-radius: 20px;
-            background-color: #e9e9ea;
-        }
+/* ─── RESPONSE BOX (right, top) ─────────────────────── */
+.resp-panel{
+  grid-column:2;grid-row:1;
+  background:var(--card);
+  display:flex;flex-direction:column;
+  overflow:hidden;min-height:0;
+}
+.resp-hdr{
+  padding:.65rem 1.1rem;
+  border-bottom:1px solid var(--brd);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+}
+.resp-title{
+  font-size:.65rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);
+  display:flex;align-items:center;gap:.45rem;
+}
+.resp-title svg{opacity:.6}
+.resp-btns{display:flex;gap:.4rem}
+.resp-body{flex:1;overflow-y:auto;padding:1rem 1.1rem;min-height:0}
+.resp-body::-webkit-scrollbar{width:3px}
+.resp-body::-webkit-scrollbar-track{background:transparent}
+.resp-body::-webkit-scrollbar-thumb{background:var(--brd);border-radius:3px}
 
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: #5f6368;
-        }
+/* empty state */
+.empty-state{
+  height:100%;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:.85rem;color:var(--t3);text-align:center;padding:2rem;
+}
+.empty-icon{font-size:2.8rem;opacity:.25;line-height:1}
+.empty-state h3{font-family:'Lora',serif;font-size:1rem;font-weight:600;color:var(--t2);opacity:.45}
+.empty-state p{font-size:.82rem;max-width:260px;line-height:1.65;opacity:.55}
 
-        /* Status States */
-        .status-ready { background-color: #e6f4ea; color: var(--success-color); }
-        .status-ready .status-dot { background-color: var(--success-color); }
-        
-        .status-listening { background-color: #feefe3; color: var(--warning-color); animation: pulse 1.5s infinite; }
-        .status-listening .status-dot { background-color: var(--warning-color); }
+/* response sections */
+.resp-sections{display:flex;flex-direction:column;gap:.75rem;animation:fadein .3s ease-out}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.rs{border-radius:var(--rs);overflow:hidden;border:1px solid transparent}
+.rs-lbl{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:.35rem .7rem}
+.rs-body{padding:.5rem .75rem .65rem;font-size:.875rem;line-height:1.65;white-space:pre-wrap}
 
-        .status-thinking { background-color: #e8f0fe; color: var(--primary-color); }
-        .status-thinking .status-dot { background-color: var(--primary-color); animation: pulse 1s infinite; }
+/* section colour themes */
+.rs-original{background:var(--red-lt);border-color:#fecaca}
+.rs-original .rs-lbl{color:var(--red)}
+.rs-original .rs-body{color:#7f1d1d;text-decoration:line-through;text-decoration-color:var(--red);text-decoration-thickness:1.5px}
+.rs-corrected{background:var(--grn-lt);border-color:#bbf7d0}
+.rs-corrected .rs-lbl{color:var(--grn)}
+.rs-corrected .rs-body{color:#14532d;font-weight:600;font-size:.95rem}
+.rs-explanation{background:var(--bg);border-color:var(--brd)}
+.rs-explanation .rs-lbl{color:var(--t3)}
+.rs-explanation .rs-body{color:var(--t2)}
+.rs-rule{background:var(--blu-lt);border-color:#bfdbfe}
+.rs-rule .rs-lbl{color:var(--blu)}
+.rs-rule .rs-body{color:#1e3a8a;font-family:'Courier New',monospace;font-size:.82rem}
+.rs-examples{background:var(--parch);border-color:var(--brd)}
+.rs-examples .rs-lbl{color:var(--amber)}
+.rs-examples .rs-body{color:var(--t2)}
+.rs-mistakes{background:var(--orn-lt);border-color:#fed7aa}
+.rs-mistakes .rs-lbl{color:var(--orn)}
+.rs-mistakes .rs-body{color:#7c2d12}
+.rs-tip{background:var(--gold-lt);border-color:#fde68a}
+.rs-tip .rs-lbl{color:var(--gold)}
+.rs-tip .rs-body{color:#78350f}
+.rs-practice{background:linear-gradient(135deg,var(--teal-lt) 0%,#e0f2fe 100%);border-color:var(--teal);border-width:1.5px}
+.rs-practice .rs-lbl{color:var(--teal-dk)}
+.rs-practice .rs-body{color:var(--teal-dk);font-weight:500}
+.rs-definition{background:var(--teal-lt);border-color:var(--teal)}
+.rs-definition .rs-lbl{color:var(--teal-dk)}
+.rs-definition .rs-body{color:var(--teal-dk)}
+.rs-generic{background:var(--bg);border-color:var(--brd)}
+.rs-generic .rs-lbl{color:var(--t3)}
+.rs-generic .rs-body{color:var(--t2)}
 
-        .status-speaking { background-color: #f3e8ff; color: #681da8; }
-        .status-speaking .status-dot { background-color: #681da8; }
+/* thinking skeleton */
+.skel{display:flex;flex-direction:column;gap:.65rem;padding:.25rem;animation:fadein .2s ease}
+.skbar{height:11px;border-radius:5px;background:linear-gradient(90deg,var(--brd) 25%,var(--parch) 50%,var(--brd) 75%);background-size:200% 100%;animation:shimmer 1.4s ease infinite}
+.skbar.w100{width:100%}.skbar.w80{width:80%}.skbar.w60{width:60%}.skbar.w45{width:45%}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
-        .status-error { background-color: #fce8e6; color: var(--error-color); }
-        .status-error .status-dot { background-color: var(--error-color); }
+/* ─── CONTROLS (bottom right) ──────────────────────── */
+.controls{
+  grid-column:2;grid-row:2;
+  background:var(--card);
+  border-top:1px solid var(--brd);
+  padding:.7rem 1.1rem .8rem;
+  display:flex;flex-direction:column;gap:.65rem;
+  flex-shrink:0;
+}
+.toolbar{display:flex;gap:.45rem;align-items:center;flex-wrap:wrap}
+.input-row{display:flex;gap:.65rem;align-items:flex-end}
+.ta-wrap{flex:1;position:relative}
+textarea{
+  width:100%;min-height:74px;max-height:150px;
+  padding:.65rem .9rem;resize:vertical;
+  border:1.5px solid var(--brd);border-radius:var(--rs);
+  font-family:'DM Sans','Noto Sans Oriya','Noto Sans Devanagari',sans-serif;
+  font-size:.93rem;color:var(--t1);background:var(--bg);line-height:1.55;
+  transition:border-color .2s,box-shadow .2s;
+}
+textarea:focus{outline:none;border-color:var(--teal);background:#fff;box-shadow:0 0 0 3px rgba(15,118,110,.1)}
+.metrics{
+  position:absolute;bottom:-19px;right:2px;
+  font-size:.68rem;color:var(--t3);display:flex;gap:.6rem
+}
 
-        @keyframes pulse {
-            0% { opacity: 0.4; }
-            50% { opacity: 1; }
-            100% { opacity: 0.4; }
-        }
+/* buttons & selects */
+button,select{
+  font-family:'DM Sans',sans-serif;font-size:.83rem;font-weight:500;
+  padding:.48rem .85rem;border-radius:var(--rs);
+  border:1.5px solid var(--brd);background:var(--card);color:var(--t2);
+  cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:.35rem;
+  transition:all .15s ease;min-height:40px;white-space:nowrap;
+}
+button:hover{background:var(--parch);border-color:var(--brd2);color:var(--t1)}
+button:active{transform:scale(.98)}
+button:disabled{opacity:.45;cursor:not-allowed;transform:none}
 
-        /* Layout Framework */
-        main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            max-width: 1000px;
-            width: 100%;
-            margin: 0 auto;
-            padding: 1rem;
-            gap: 1rem;
-            height: calc(100vh - 70px);
-        }
+.btn-send{background:var(--teal);color:#fff;border-color:var(--teal);font-weight:600;padding:.48rem 1.1rem}
+.btn-send:hover{background:var(--teal-dk);border-color:var(--teal-dk);color:#fff}
+.btn-send:disabled{background:#9ca3af;border-color:#9ca3af}
+.btn-mic{background:var(--grn-lt);color:var(--grn);border-color:#bbf7d0}
+.btn-mic:hover{background:#bbf7d0;color:var(--grn)}
+.btn-mic.on{background:var(--red-lt);color:var(--red);border-color:#fecaca}
+.btn-mic.on:hover{background:#fecaca;color:var(--red)}
+.btn-stop{background:var(--prp-lt);color:var(--prp);border-color:#ddd6fe}
+.btn-stop:hover{background:#ddd6fe;color:var(--prp)}
+.btn-clr{color:var(--t3)}
+.btn-clr:hover{background:var(--red-lt);color:var(--red);border-color:#fecaca}
+.btn-sm{padding:.27rem .58rem;font-size:.72rem;min-height:30px;border-radius:6px}
 
-        /* Chat History Panel */
-        .chat-container {
-            flex: 1;
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            overflow-y: auto;
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1.25rem;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-        }
+select{
+  -webkit-appearance:none;appearance:none;padding-right:1.8rem;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%2378716c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat:no-repeat;background-position:right .45rem center;background-size:.95rem;
+}
+select:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(15,118,110,.1)}
 
-        .message {
-            max-width: 85%;
-            padding: 1rem 1.25rem;
-            border-radius: 16px;
-            position: relative;
-            word-wrap: break-word;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-        }
-
-        .user-message {
-            background-color: var(--user-msg-bg);
-            color: #1557b0;
-            align-self: flex-end;
-            border-bottom-right-radius: 4px;
-        }
-
-        .ai-message {
-            background-color: var(--ai-msg-bg);
-            color: var(--text-main);
-            align-self: flex-start;
-            border-bottom-left-radius: 4px;
-            border: 1px solid var(--border-color);
-        }
-
-        .message-header {
-            font-size: 0.75rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .ai-message .message-header { color: var(--primary-color); }
-        .user-message .message-header { color: #1c54b2; }
-
-        .message-body {
-            font-size: 0.95rem;
-            white-space: pre-wrap;
-        }
-
-        .message-actions {
-            margin-top: 0.75rem;
-            display: flex;
-            gap: 0.5rem;
-            justify-content: flex-end;
-        }
-
-        .msg-btn {
-            background: none;
-            border: 1px solid var(--border-color);
-            padding: 0.3rem 0.6rem;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-            color: var(--text-muted);
-            transition: all 0.2s;
-        }
-
-        .msg-btn:hover {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-        }
-
-        /* Controls & Form Panel */
-        .controls-container {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 1rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-        }
-
-        .toolbar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .toolbar-group {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        select, button {
-            font-family: inherit;
-            font-size: 0.9rem;
-            padding: 0.6rem 1rem;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            background-color: #ffffff;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            font-weight: 500;
-            min-height: 44px; /* Touch friendly */
-        }
-
-        select {
-            padding-right: 2rem;
-            appearance: none;
-            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%235f6368' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
-            background-repeat: no-repeat;
-            background-position: right 0.5rem center;
-            background-size: 1.2rem;
-        }
-
-        select:focus, textarea:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px var(--primary-light);
-        }
-
-        /* Primary Action Button */
-        .btn-primary {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-        }
-        .btn-primary:hover { background-color: var(--primary-hover); }
-        .btn-primary:disabled { background-color: #93b7eb; cursor: not-allowed; }
-
-        /* Secondary Voice Actions */
-        .btn-mic { background-color: #e6f4ea; color: var(--success-color); border-color: #ceead6; }
-        .btn-mic:hover { background-color: #ceead6; }
-        .btn-mic.listening { background-color: #fce8e6; color: var(--error-color); border-color: #fad2cf; }
-
-        .btn-stop-speak { background-color: #f3e8ff; color: #681da8; border-color: #e9d5ff; }
-        .btn-stop-speak:hover { background-color: #e9d5ff; }
-
-        .btn-danger { background-color: #fff; color: var(--text-muted); }
-        .btn-danger:hover { background-color: #fce8e6; color: var(--error-color); border-color: #fad2cf; }
-
-        /* Input Block */
-        .input-wrapper {
-            position: relative;
-            width: 100%;
-        }
-
-        textarea {
-            width: 100%;
-            min-height: 100px;
-            max-height: 200px;
-            padding: 0.75rem 1rem;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-family: inherit;
-            font-size: 1rem;
-            resize: vertical;
-        }
-
-        .counter-badge {
-            position: absolute;
-            bottom: -22px;
-            right: 5px;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            display: flex;
-            gap: 0.75rem;
-        }
-
-        /* Formatting helper metrics for AI Outputs */
-        .formatted-block {
-            margin-top: 0.5rem;
-            border-left: 3px solid var(--primary-color);
-            padding-left: 0.75rem;
-            background: var(--bg-color);
-            padding: 0.5rem 0.75rem;
-            border-radius: 0 6px 6px 0;
-        }
-
-        /* Mobile Adjustments */
-        @media (max-width: 600px) {
-            header { padding: 0.75rem 1rem; justify-content: center; text-align: center; }
-            .status-container { width: 100%; justify-content: center; }
-            main { height: auto; padding: 0.5rem; }
-            .chat-container { height: 400px; padding: 0.75rem; }
-            .message { max-width: 95%; }
-            .toolbar { flex-direction: column; align-items: stretch; }
-            .toolbar-group { width: 100%; }
-            .toolbar-group > * { flex: 1; min-width: 110px; }
-            textarea { min-height: 80px; }
-        }
-    </style>
+/* ─── MOBILE ─────────────────────────────────────── */
+@media(max-width:768px){
+  body{height:auto;overflow:auto}
+  .main-grid{
+    grid-template-columns:1fr;
+    grid-template-rows:220px 1fr auto;
+    height:auto;overflow:visible;
+  }
+  .chat-panel{grid-column:1;grid-row:1;border-right:none;border-bottom:1px solid var(--brd);max-height:220px}
+  .resp-panel{grid-column:1;grid-row:2;min-height:320px}
+  .controls{grid-column:1;grid-row:3}
+  .toolbar{flex-wrap:wrap}
+  .toolbar select,.toolbar button{flex:1;min-width:130px}
+}
+</style>
 </head>
 <body>
 
-    <header>
-        <div class="logo-area">
-            <h1>GrammarMaster AI</h1>
-            <p>Speak, Learn and Improve English</p>
+<header>
+  <div class="logo-wrap">
+    <div class="logo-badge">G</div>
+    <div>
+      <div class="logo-title">GrammarMaster AI</div>
+      <div class="logo-sub">Speak, Learn and Improve English</div>
+    </div>
+  </div>
+  <div id="statusEl" class="status s-ready">
+    <div class="sdot"></div>
+    <span id="statusTxt">Ready</span>
+  </div>
+</header>
+
+<div class="main-grid">
+
+  <aside class="chat-panel">
+    <div class="panel-hdr">
+      <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Chat History
+    </div>
+    <div id="chatMsgs" class="chat-msgs">
+      <div class="bubble b-ai">
+        <div class="blbl">GrammarMaster</div>
+        <div class="btxt">Namaskar! 🙏 I'm your English Grammar Teacher. Type or speak in English, Odia or Hindi — select your language below, then click Ask AI!</div>
+      </div>
+    </div>
+  </aside>
+
+  <section class="resp-panel">
+    <div class="resp-hdr">
+      <div class="resp-title">
+        <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 13h6M9 17h4"/></svg>
+        Response Box — Latest AI Answer
+      </div>
+      <div class="resp-btns" id="respBtns" style="display:none">
+        <button class="btn-sm" id="copyBtn" onclick="copyResp()">
+          <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy
+        </button>
+        <button class="btn-sm btn-stop" onclick="speakResp()">
+          <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+          Speak
+        </button>
+      </div>
+    </div>
+    <div id="respBody" class="resp-body">
+      <div class="empty-state">
+        <div class="empty-icon">📝</div>
+        <h3>Response will appear here</h3>
+        <p>Type a sentence or grammar question below and click <strong>Ask AI</strong> to see a detailed formatted response.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="controls">
+    <div class="toolbar">
+      <select id="langSel" title="Explanation Language">
+        <option value="en-US">🇬🇧 English Mode</option>
+        <option value="or-IN">🔤 Odia Mode (ଓଡ଼ିଆ)</option>
+        <option value="hi-IN">🇮🇳 Hindi Mode (हिंदी)</option>
+      </select>
+      <button id="micBtn" class="btn-mic" title="Voice Input">
+        <svg width="13" height="13" fill="currentColor" viewBox="0 0 16 16"><path d="M5 3a3 3 0 0 1 6 0v5a3 3 0 0 1-6 0V3z"/><path d="M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5z"/></svg>
+        <span id="micLbl">Speak Input</span>
+      </button>
+      <button id="stopSpeakBtn" class="btn-stop" style="display:none" onclick="haltSpeech()">
+        <svg width="13" height="13" fill="currentColor" viewBox="0 0 16 16"><rect x="3" y="3" width="10" height="10" rx="1"/></svg>
+        Stop Speaking
+      </button>
+      <button id="clearBtn" class="btn-clr" style="margin-left:auto">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6M10 11v6M14 11v6M9 6V4h6v2"/></svg>
+        Clear Chat
+      </button>
+    </div>
+    <div class="input-row">
+      <div class="ta-wrap">
+        <textarea id="userInput" placeholder="Type your sentence or grammar question here… or use Speak Input above."></textarea>
+        <div class="metrics">
+          <span id="chrCnt">0 chars</span>
+          <span id="wrdCnt">0 words</span>
         </div>
-        <div id="statusBanner" class="status-container status-ready">
-            <span class="status-dot"></span>
-            <span id="statusText">Ready</span>
-        </div>
-    </header>
-
-    <main>
-        <div id="chatContainer" class="chat-container">
-            <div class="message ai-message">
-                <div class="message-header">GrammarMaster AI</div>
-                <div class="message-body">Namaskar! 🙏 I am GrammarMaster, your personal English Grammar Teacher. 
-
-You can type or speak to me in **English, Odia (ଓଡ଼ିଆ), or Hindi (हिंदी)**. I am here to correct your grammar errors, build vocabulary, and guide you through school or competitive exam configurations.
-
-Choose your explanation language below, type/speak your passage, and click **Ask AI**!</div>
-            </div>
-        </div>
-
-        <div class="controls-container">
-            <div class="input-wrapper">
-                <textarea id="userInput" placeholder="Type your sentence here, ask a grammar rule question, or use the 'Speak Input' mic..."></textarea>
-                <div class="counter-badge">
-                    <span id="charCount">Characters: 0</span>
-                    <span id="wordCount">Words: 0</span>
-                </div>
-            </div>
-
-            <div class="toolbar">
-                <div class="toolbar-group">
-                    <select id="languageSelect" title="Select Input and Explanation Language">
-                        <option value="en-US">English Mode</option>
-                        <option value="or-IN">Odia Mode (ଓଡ଼ିଆ)</option>
-                        <option value="hi-IN">Hindi Mode (हिंदी)</option>
-                    </select>
-                    
-                    <button id="micBtn" class="btn-mic" title="Start Voice Capture">
-                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M5 3a3 3 0 0 1 6 0v5a3 3 0 0 1-6 0V3z"/><path d="M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5z"/></svg>
-                        <span>Speak Input</span>
-                    </button>
-                    
-                    <button id="stopSpeakBtn" class="btn-stop-speak" title="Halt current Voice Synthesizer output" style="display:none;">
-                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M6 3.5a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5zm4 0a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5z"/></svg>
-                        <span>Stop Speaking</span>
-                    </button>
-                </div>
-
-                <div class="toolbar-group">
-                    <button id="clearBtn" class="btn-danger" title="Clear local workspace and history logs">Clear Chat</button>
-                    <button id="submitBtn" class="btn-primary" title="Transmit to Gemini AI Engine">
-                        <span>Ask AI</span>
-                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11zM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07zm-.007.622-1.557 5.07a.5.5 0 0 1-.962-.1c-.135-.86-.615-3.864-.615-3.864l5.134-1.106z"/></svg>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <script>
-        /*****************************************************************
-         * CONFIGURATION & STATE MANUFACTURE
-         *****************************************************************/
-        // STABLE PRODUCTION REPLACEMENT INTERFACE FOR GEMINI API
-        const API_KEY = "AQ.Ab8RN6IUXmC1VtNHpbGyYM0jP_gVDYO9Ynl2jAoyp0gTttPYZA"; 
-        const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`;
-
-        // Global Architectural States
-        let recognition = null;
-        let syntheticSpeechUtterance = null;
-        let conversationLogs = [];
-
-        // DOM Pointers
-        const statusBanner = document.getElementById('statusBanner');
-        const statusText = document.getElementById('statusText');
-        const chatContainer = document.getElementById('chatContainer');
-        const userInput = document.getElementById('userInput');
-        const languageSelect = document.getElementById('languageSelect');
-        const micBtn = document.getElementById('micBtn');
-        const stopSpeakBtn = document.getElementById('stopSpeakBtn');
-        const clearBtn = document.getElementById('clearBtn');
-        const submitBtn = document.getElementById('submitBtn');
-        const charCountDisplay = document.getElementById('charCount');
-        const wordCountDisplay = document.getElementById('wordCount');
-
-        // Master Educational Teacher Instructions
-        const SYSTEM_PROMPT = `You are GrammarMaster, an expert English Grammar Teacher.
-Your goals:
-1. Teach grammar clearly and accurately.
-2. Correct grammar mistakes.
-3. Improve vocabulary.
-4. Improve writing.
-5. Improve speaking skills.
-6. Help students prepare for school exams (BSE Odisha, CHSE, CBSE) and competitive exams.
-7. Adapt explanations for beginners.
-
-Multilingual Response Architecture Constraints:
-- The user may converse/input text or spoken language in English, Odia (ଓଡ଼ିଆ), or Hindi (हिंदी).
-- You must always process and target explanations using the translation rules matched to the selected language parameter.
-- If the user choice language state is Odia ('or-IN'), formulate the core teaching explanations, logic, breakdown summaries, definitions, rules, and memory tips primarily in Odia language script, while ensuring English targeted sentences and variations remain cleanly formatted in English text.
-- If the choice language state is Hindi ('hi-IN'), formulate explanations, rules, and breakdown tips in Hindi language text.
-- If the choice language state is English ('en-US'), provide all explanations completely in English.
-
-Formatting Instruction Schemas based on Input Type:
-
-CASE A: When correcting specific sentences:
-Show exactly:
-Original Sentence: [Sentence provided]
-Corrected Sentence: [Perfected Form]
-Explanation: [Provide up to 5 clear lines explaining why changes occurred]
-
-Then structuralize exactly using distinct headings or clear lines:
-- Grammar Rule: [The underlying operational rule]
-- Why it is correct: [Grammar framework details]
-- 3 Similar Examples: [Short bullet points matching structural layout]
-- Common Mistakes: [What typical Indian/Odia students do wrong here]
-- Memory Tip: [An easy phrase or mental note to remember this rule]
-
-CASE B: For general grammar framework questions:
-Show exactly:
-- Definition: [Meaning]
-- Rule: [Syntactic framework parameters]
-- Examples: [Detailed illustrative clear targets]
-- Practice Exercise: [Provide a brief quiz/interactive query setup]
-
-CASE C: For Vocabulary lookups:
-Show exactly:
-- Meaning: [Clear definition]
-- Pronunciation: [Readable phonics or guides]
-- Synonyms: [Alternative words]
-- Antonyms: [Opposite words]
-- Example Sentences: [Contextual structures]
-
-CASE D: For Spoken English requests/conversational checks:
-Show exactly:
-- Natural Conversational Version: [Everyday native execution]
-- Formal Version: [Corporate/Exam standard execution]
-- Informal Version: [Casual/Friend circle execution]
-
-Always, without exception, append this exact line at the conclusion of every turn:
-Practice Challenge: [Provide a hyper-targeted assignment sentence or query prompt for the student to attempt in response]`;
-
-        /*****************************************************************
-         * LIFECYCLE & INITIALIZATION
-         *****************************************************************/
-        window.addEventListener('DOMContentLoaded', () => {
-            initializeSpeechToText();
-            loadChatHistory();
-            attachEventHandlers();
-            updateTextMetrics();
-        });
-
-        function attachEventHandlers() {
-            userInput.addEventListener('input', updateTextMetrics);
-            submitBtn.addEventListener('click', handleUserSubmission);
-            micBtn.addEventListener('click', toggleVoiceCapture);
-            stopSpeakBtn.addEventListener('click', haltVoiceSynthesis);
-            clearBtn.addEventListener('click', purgeChatHistory);
-            
-            // Re-bind enter keys safely (Ctrl/Cmd + Enter to trigger)
-            userInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    handleUserSubmission();
-                }
-            });
-        }
-
-        /*****************************************************************
-         * UI STATUS ENGINE
-         *****************************************************************/
-        function updateStatus(state, customText = "") {
-            statusBanner.className = "status-container";
-            
-            switch(state) {
-                case 'ready':
-                    statusBanner.classList.add('status-ready');
-                    statusText.innerText = customText || "Ready";
-                    break;
-                case 'listening':
-                    statusBanner.classList.add('status-listening');
-                    statusText.innerText = customText || "Listening to Voice...";
-                    break;
-                case 'thinking':
-                    statusBanner.classList.add('status-thinking');
-                    statusText.innerText = customText || "Thinking...";
-                    break;
-                case 'speaking':
-                    statusBanner.classList.add('status-speaking');
-                    statusText.innerText = customText || "Speaking...";
-                    break;
-                case 'error':
-                    statusBanner.classList.add('status-error');
-                    statusText.innerText = customText || "System Error";
-                    break;
-            }
-        }
-
-        function updateTextMetrics() {
-            const text = userInput.value.trim();
-            charCountDisplay.innerText = `Characters: ${text.length}`;
-            wordCountDisplay.innerText = `Words: ${text ? text.split(/\s+/).length : 0}`;
-        }
-
-        /*****************************************************************
-         * CHAT HISTORICAL PERSISTENCE (LOCALSTORAGE)
-         *****************************************************************/
-        function saveChatHistory() {
-            localStorage.setItem('grammarmaster_history', JSON.stringify(conversationLogs));
-        }
-
-        function loadChatHistory() {
-            const savedData = localStorage.getItem('grammarmaster_history');
-            if (savedData) {
-                try {
-                    conversationLogs = JSON.parse(savedData);
-                    conversationLogs.forEach(msg => {
-                        appendMessageToUI(msg.role === 'user' ? 'USER' : 'AI', msg.text, false);
-                    });
-                } catch (e) {
-                    console.error("Failed structural loading of historical chat logs", e);
-                    localStorage.removeItem('grammarmaster_history');
-                }
-            }
-        }
-
-        function purgeChatHistory() {
-            if (confirm("Are you sure you want to clear the entire conversation history?")) {
-                haltVoiceSynthesis();
-                conversationLogs = [];
-                localStorage.removeItem('grammarmaster_history');
-                chatContainer.innerHTML = `
-                    <div class="message ai-message">
-                        <div class="message-header">GrammarMaster AI</div>
-                        <div class="message-body">History cleared successfully. What grammar topic or sentence would you like to verify now?</div>
-                    </div>
-                `;
-                updateStatus('ready');
-            }
-        }
-
-        /*****************************************************************
-         * UI RENDER COMPONENT
-         *****************************************************************/
-        function appendMessageToUI(sender, text, shouldScroll = true) {
-            const msgNode = document.createElement('div');
-            msgNode.classList.add('message', sender === 'USER' ? 'user-message' : 'ai-message');
-            
-            const header = document.createElement('div');
-            header.classList.add('message-header');
-            header.innerText = sender === 'USER' ? 'You' : 'GrammarMaster AI';
-            
-            const body = document.createElement('div');
-            body.classList.add('message-body');
-            
-            // Format systemic items like "Original Sentence", "Corrected Sentence" natively with clean breaks
-            body.innerHTML = parseMarkdownFormatting(text);
-            
-            msgNode.appendChild(header);
-            msgNode.appendChild(body);
-
-            // Add utilities to AI Responses
-            if (sender === 'AI') {
-                const actions = document.createElement('div');
-                actions.classList.add('message-actions');
-
-                const copyBtn = document.createElement('button');
-                copyBtn.classList.add('msg-btn');
-                copyBtn.innerHTML = `<span>Copy</span>`;
-                copyBtn.onclick = () => {
-                    navigator.clipboard.writeText(text);
-                    copyBtn.innerText = "Copied!";
-                    setTimeout(() => copyBtn.innerText = "Copy", 2000);
-                };
-
-                const readBtn = document.createElement('button');
-                readBtn.classList.add('msg-btn');
-                readBtn.innerHTML = `<span>Speak</span>`;
-                readBtn.onclick = () => executeVoiceSynthesis(text);
-
-                actions.appendChild(copyBtn);
-                actions.appendChild(readBtn);
-                msgNode.appendChild(actions);
-            }
-
-            chatContainer.appendChild(msgNode);
-            
-            if (shouldScroll) {
-                chatContainer.scrollTop = chatContainer.scrollHeight;
-            }
-        }
-
-        // Minimalist parsing of markdown styling vectors to keep standalone code pure
-        function parseMarkdownFormatting(rawText) {
-            let processed = rawText
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                .replace(/^- (.*)$/gme, '<li>$1</li>');
-                
-            return processed;
-        }
-
-        /*****************************************************************
-         * WEB SPEECH ENGINE (SPEECH-TO-TEXT)
-         *****************************************************************/
-        function initializeSpeechToText() {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) {
-                console.warn("Web Speech API Recognition structural drivers missing on this device/browser variant.");
-                micBtn.style.display = "none";
-                return;
-            }
-
-            recognition = new SpeechRecognition();
-            recognition.continuous = false;
-            recognition.interimResults = false;
-
-            recognition.onstart = () => {
-                updateStatus('listening', 'Listening to voice...');
-                micBtn.classList.add('listening');
-                micBtn.querySelector('span').innerText = "Stop Capturing";
-            };
-
-            recognition.onerror = (event) => {
-                console.error("Speech Recognition processing variant failure", event.error);
-                updateStatus('error', `Voice Error: ${event.error}`);
-                stopMicTrackingState();
-            };
-
-            recognition.onend = () => {
-                stopMicTrackingState();
-            };
-
-            recognition.onresult = (event) => {
-                const speechResult = event.results[0][0].transcript;
-                if (speechResult) {
-                    const workingSpaceText = userInput.value.trim();
-                    userInput.value = workingSpaceText ? `${workingSpaceText} ${speechResult}` : speechResult;
-                    updateTextMetrics();
-                }
-            };
-        }
-
-        function toggleVoiceCapture() {
-            if (!recognition) {
-                alert("Speech recognition features are unsupported on this environment or browser profile.");
-                return;
-            }
-
-            if (statusBanner.classList.contains('status-listening')) {
-                recognition.stop();
-            } else {
-                haltVoiceSynthesis();
-                recognition.lang = languageSelect.value;
-                try {
-                    recognition.start();
-                } catch (e) {
-                    console.error("Error launching system capture stack", e);
-                }
-            }
-        }
-
-        function stopMicTrackingState() {
-            micBtn.classList.remove('listening');
-            micBtn.querySelector('span').innerText = "Speak Input";
-            if (statusText.innerText.includes("Listening")) {
-                updateStatus('ready');
-            }
-        }
-
-        /*****************************************************************
-         * SPEECH SYNTHESIS ENGINE (TEXT-TO-SPEECH)
-         *****************************************************************/
-        function executeVoiceSynthesis(text) {
-            haltVoiceSynthesis();
-
-            if (!('speechSynthesis' in window)) {
-                alert("Text-to-speech framework not supported on this platform.");
-                return;
-            }
-
-            // Remove internal technical tags or formatting symbols from presentation speech audio
-            const audioCleanedString = text.replace(/[*#_`\-]/g, '').trim();
-            if (!audioCleanedString) return;
-
-            syntheticSpeechUtterance = new SpeechSynthesisUtterance(audioCleanedString);
-            
-            // Map configuration targets to languages natively handled by target system voices
-            const mappedLangSelection = languageSelect.value;
-            syntheticSpeechUtterance.lang = mappedLangSelection;
-
-            syntheticSpeechUtterance.onstart = () => {
-                updateStatus('speaking', 'Speaking Response...');
-                stopSpeakBtn.style.display = "inline-flex";
-            };
-
-            syntheticSpeechUtterance.onend = () => {
-                updateStatus('ready');
-                stopSpeakBtn.style.display = "none";
-            };
-
-            syntheticSpeechUtterance.onerror = (e) => {
-                console.error("TTS processing interface failure fault", e);
-                updateStatus('ready');
-                stopSpeakBtn.style.display = "none";
-            };
-
-            window.speechSynthesis.speak(syntheticSpeechUtterance);
-        }
-
-        function haltVoiceSynthesis() {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-            }
-            stopSpeakBtn.style.display = "none";
-            if (statusText.innerText.includes("Speaking")) {
-                updateStatus('ready');
-            }
-        }
-
-        /*****************************************************************
-         * WORKFLOW TRANSACTION CONTROLLER & GEMINI API CORE
-         *****************************************************************/
-        async function handleUserSubmission() {
-            const textRawContent = userInput.value.trim();
-            if (!textRawContent) return;
-
-            if (API_KEY === "YOUR_GEMINI_API_KEY") {
-                alert("Please initialize your actual Gemini API authorization key vector configuration string inside the source layout framework constants.");
-                return;
-            }
-
-            haltVoiceSynthesis();
-            
-            // Frame elements onto UI pipeline
-            appendMessageToUI('USER', textRawContent);
-            userInput.value = "";
-            updateTextMetrics();
-
-            // Cache historic sequence payload layout arrays
-            conversationLogs.push({ role: 'user', text: textRawContent });
-            saveChatHistory();
-
-            updateStatus('thinking', 'GrammarMaster is thinking...');
-            setControlEngagementState(false);
-
-            try {
-                const responseText = await queryGeminiProEngine(textRawContent);
-                
-                // Print response parameters
-                appendMessageToUI('AI', responseText);
-                conversationLogs.push({ role: 'model', text: responseText });
-                saveChatHistory();
-                
-                updateStatus('ready');
-                
-                // Automatic vocalization callback sequence triggered 
-                executeVoiceSynthesis(responseText);
-
-            } catch (error) {
-                console.error("Primary runtime endpoint framework error:", error);
-                updateStatus('error', 'Error compiling AI response context.');
-                appendMessageToUI('AI', `System Connection Timeout Error: ${error.message || 'Please check your internet network settings or verify your API key validation profile status.'}`);
-            } finally {
-                setControlEngagementState(true);
-            }
-        }
-
-        function setControlEngagementState(activeState) {
-            submitBtn.disabled = !activeState;
-            userInput.disabled = !activeState;
-            languageSelect.disabled = !activeState;
-            if (activeState) {
-                userInput.focus();
-            }
-        }
-
-        async function queryGeminiProEngine(prompt) {
-            const currentUISelectedLanguage = languageSelect.value;
-            let languageExplicitContext = "English";
-            if (currentUISelectedLanguage === 'or-IN') languageExplicitContext = "Odia (ଓଡ଼ିଆ)";
-            if (currentUISelectedLanguage === 'hi-IN') languageExplicitContext = "Hindi (हिंदी)";
-
-            // Inject the runtime context criteria into systemic payload instructions dynamically
-            const tailoredSystemInstructions = `${SYSTEM_PROMPT}\nCURRENT CONTEXT: The user has selected a processing preference for ${languageExplicitContext} language explanations. Custom translate framework explanations to align precisely to this target state requirement text.`;
-
-            // Transform chat history array into Gemini's payload format
-            // We append the system prompt context directly into the conversation payload to ensure robust rule compliance across all variants.
-            const apiContentsPayload = [
-                {
-                    role: 'user',
-                    parts: [{ text: `${tailoredSystemInstructions}\n\nUnderstood. Start interacting here.` }]
-                },
-                {
-                    role: 'model',
-                    parts: [{ text: "I am ready. I will follow your strict layout frameworks and explain grammar elements optimized dynamically according to chosen localization language variables." }]
-                }
-            ];
-
-            // Append stored conversation turns safely
-            conversationLogs.forEach(entry => {
-                apiContentsPayload.push({
-                    role: entry.role === 'user' ? 'user' : 'model',
-                    parts: [{ text: entry.text }]
-                });
-            });
-
-            const requestBody = {
-                contents: apiContentsPayload,
-                generationConfig: {
-                    temperature: 0.3,
-                    maxOutputTokens: 2048
-                }
-            };
-
-            const response = await fetch(GEMINI_API_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(requestBody)
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                throw new Error(errorData.error?.message || `HTTP Service Exception error code details returned: ${response.status}`);
-            }
-
-            const data = await response.json();
-            
-            // Secure response text extraction tracking pathways
-            if (data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
-                return data.candidates[0].content.parts[0].text;
-            } else {
-                throw new Error("Invalid structure payload layout mapping schema exception encountered from remote node server.");
-            }
-        }
-    </script>
+      </div>
+      <button id="sendBtn" class="btn-send" style="align-self:flex-end">
+        Ask AI
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════════════
+   CONFIGURATION
+   ════════════════════════════════════════════════════════
+   Running Standalone or GitHub Pages: Replace the string below with your 
+   Gemini API key from Google AI Studio (https://aistudio.google.com).
+*/
+const GEMINI_API_KEY = "AQ.Ab8RN6IUXmC1VtNHpbGyYM0jP_gVDYO9Ynl2jAoyp0gTttPYZA";
+const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+/* ════════════════════════════════════════════════════════
+   SYSTEM PROMPT
+*/
+const SYS = `You are GrammarMaster, an expert English Grammar Teacher AI for Indian school students.
+
+Goals: teach grammar clearly, correct mistakes, build vocabulary, improve writing and speaking, prepare students for BSE Odisha / CHSE / CBSE and competitive exams. Adapt for beginners.
+
+Language rules:
+- User selects a language code embedded in each message.
+- or-IN → write all explanations, rules, and tips in Odia script; keep English sentences in English.
+- hi-IN → write all explanations in Hindi.
+- en-US → respond entirely in English.
+
+ALWAYS use these EXACT section labels (followed by a colon on its own line or inline):
+
+CASE A — Correcting a sentence:
+Original Sentence: [sentence]
+Corrected Sentence: [corrected form]
+Explanation: [up to 5 clear lines]
+Grammar Rule: [the rule]
+Why It Is Correct: [grammar details]
+3 Similar Examples:
+[3 bullet examples]
+Common Mistakes: [what Indian students often do wrong]
+Memory Tip: [easy recall phrase]
+Practice Challenge: [targeted assignment for the student]
+
+CASE B — Grammar concept question:
+Definition: [meaning]
+Rule: [framework]
+Examples: [3 examples]
+Practice Exercise: [quiz or activity]
+Practice Challenge: [assignment]
+
+CASE C — Vocabulary:
+Meaning: [definition]
+Pronunciation: [phonetic guide]
+Synonyms: [similar words]
+Antonyms: [opposite words]
+Example Sentences: [3 contextual examples]
+Practice Challenge: [use it in a sentence]
+
+CASE D — Spoken English:
+Natural Conversational Version: [everyday form]
+Formal Version: [formal/exam form]
+Informal Version: [casual form]
+Practice Challenge: [try using it]
+
+Always end every response with: Practice Challenge: [targeted prompt]`;
+
+/* ════════════════════════════════════════════════════════
+   STATE
+*/
+let chatLog = [];
+let lastRaw  = "";
+let recog    = null;
+let micOn    = false;
+let ttsUtter = null;
+
+/* ════════════════════════════════════════════════════════
+   DOM REFS
+*/
+const statusEl   = document.getElementById('statusEl');
+const statusTxt  = document.getElementById('statusTxt');
+const chatMsgs   = document.getElementById('chatMsgs');
+const respBody   = document.getElementById('respBody');
+const respBtns   = document.getElementById('respBtns');
+const userInput  = document.getElementById('userInput');
+const langSel    = document.getElementById('langSel');
+const micBtn     = document.getElementById('micBtn');
+const micLbl     = document.getElementById('micLbl');
+const stopSpeakBtn = document.getElementById('stopSpeakBtn');
+const clearBtn   = document.getElementById('clearBtn');
+const sendBtn    = document.getElementById('sendBtn');
+const chrCnt     = document.getElementById('chrCnt');
+const wrdCnt     = document.getElementById('wrdCnt');
+const copyBtn    = document.getElementById('copyBtn');
+
+/* ════════════════════════════════════════════════════════
+   INIT
+*/
+window.addEventListener('DOMContentLoaded', () => {
+  initSTT();
+  loadHistory();
+  userInput.addEventListener('input', updateMetrics);
+  sendBtn.addEventListener('click', handleSend);
+  micBtn.addEventListener('click', toggleMic);
+  clearBtn.addEventListener('click', clearAll);
+  userInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }
+  });
+});
+
+/* ════════════════════════════════════════════════════════
+   STATUS
+*/
+function setStatus(s, txt) {
+  statusEl.className = 'status';
+  const map = { ready:'s-ready', listen:'s-listen', think:'s-think', speak:'s-speak', err:'s-err' };
+  const def = { ready:'Ready', listen:'Listening…', think:'Thinking…', speak:'Speaking…', err:'Error' };
+  statusEl.classList.add(map[s] || '');
+  statusTxt.textContent = txt || def[s] || s;
+}
+
+/* ════════════════════════════════════════════════════════
+   TEXT METRICS
+*/
+function updateMetrics() {
+  const t = userInput.value.trim();
+  chrCnt.textContent = `${t.length} chars`;
+  wrdCnt.textContent = `${t ? t.split(/\s+/).length : 0} words`;
+}
+
+/* ════════════════════════════════════════════════════════
+   PERSISTENCE
+*/
+function saveHistory() {
+  try { localStorage.setItem('gm_v2', JSON.stringify(chatLog)); } catch(e) {}
+}
+function loadHistory() {
+  try {
+    const s = localStorage.getItem('gm_v2');
+    if (s) { chatLog = JSON.parse(s); chatLog.forEach(m => addBubble(m.role, m.content, false)); }
+  } catch(e) {}
+}
+function clearAll() {
+  if (!confirm('Clear all conversation history?')) return;
+  haltSpeech();
+  chatLog = []; lastRaw = '';
+  try { localStorage.removeItem('gm_v2'); } catch(e) {}
+  chatMsgs.innerHTML = `<div class="bubble b-ai"><div class="blbl">GrammarMaster</div><div class="btxt">History cleared. What would you like to learn today?</div></div>`;
+  respBody.innerHTML = `<div class="empty-state"><div class="empty-icon">📝</div><h3>Response will appear here</h3><p>Type a sentence or grammar question and click <strong>Ask AI</strong>.</p></div>`;
+  respBtns.style.display = 'none';
+  setStatus('ready');
+}
+
+/* ════════════════════════════════════════════════════════
+   CHAT BUBBLES
+*/
+function addBubble(role, text, scroll = true) {
+  const wrap = document.createElement('div');
+  wrap.className = `bubble ${role === 'user' ? 'b-user' : 'b-ai'}`;
+  const lbl = document.createElement('div');
+  lbl.className = 'blbl';
+  lbl.textContent = role === 'user' ? 'You' : 'GrammarMaster';
+  const body = document.createElement('div');
+  body.className = 'btxt';
+  const preview = text.length > 100 ? text.substring(0, 100) + '…' : text;
+  body.textContent = preview;
+  wrap.appendChild(lbl);
+  wrap.appendChild(body);
+  chatMsgs.appendChild(wrap);
+  if (scroll) chatMsgs.scrollTop = chatMsgs.scrollHeight;
+}
+
+/* ════════════════════════════════════════════════════════
+   RESPONSE BOX — SECTION PARSER
+*/
+const SECTS = [
+  { pat:/^original sentence:/i,   lbl:'❌ Original Sentence',          cls:'rs-original'    },
+  { pat:/^corrected sentence:/i,   lbl:'✅ Corrected Sentence',         cls:'rs-corrected'   },
+  { pat:/^explanation:/i,          lbl:'💬 Explanation',                cls:'rs-explanation' },
+  { pat:/^grammar rule:/i,         lbl:'📏 Grammar Rule',               cls:'rs-rule'        },
+  { pat:/^why it is correct:/i,    lbl:'✔️ Why It Is Correct',          cls:'rs-explanation' },
+  { pat:/^3 similar examples:/i,   lbl:'📋 Similar Examples',           cls:'rs-examples'    },
+  { pat:/^similar examples:/i,     lbl:'📋 Similar Examples',           cls:'rs-examples'    },
+  { pat:/^common mistakes:/i,      lbl:'⚠️ Common Mistakes',            cls:'rs-mistakes'    },
+  { pat:/^memory tip:/i,           lbl:'💡 Memory Tip',                 cls:'rs-tip'         },
+  { pat:/^practice challenge:/i,   lbl:'🎯 Practice Challenge',         cls:'rs-practice'    },
+  { pat:/^practice exercise:/i,    lbl:'🎯 Practice Exercise',          cls:'rs-practice'    },
+  { pat:/^definition:/i,           lbl:'📖 Definition',                 cls:'rs-definition'  },
+  { pat:/^rule:/i,                 lbl:'📏 Rule',                       cls:'rs-rule'        },
+  { pat:/^examples?:/i,            lbl:'📋 Examples',                   cls:'rs-examples'    },
+  { pat:/^example sentences:/i,    lbl:'📋 Example Sentences',          cls:'rs-examples'    },
+  { pat:/^meaning:/i,              lbl:'📖 Meaning',                    cls:'rs-definition'  },
+  { pat:/^pronunciation:/i,        lbl:'🔊 Pronunciation',              cls:'rs-tip'         },
+  { pat:/^synonyms:/i,             lbl:'🔄 Synonyms',                   cls:'rs-examples'    },
+  { pat:/^antonyms:/i,             lbl:'↔️ Antonyms',                   cls:'rs-mistakes'    },
+  { pat:/^natural conversational version:/i, lbl:'💬 Conversational',  cls:'rs-corrected'   },
+  { pat:/^formal version:/i,       lbl:'🎓 Formal Version',             cls:'rs-rule'        },
+  { pat:/^informal version:/i,     lbl:'😊 Informal Version',           cls:'rs-examples'    },
+];
+
+function parseResponse(raw) {
+  const lines = raw.split('\n');
+  const segments = []; 
+  let currSect = null;
+  let currLines = [];
+
+  function flush() {
+    const content = currLines.join('\n').trim();
+    if (!content) return;
+    if (currSect) {
+      segments.push({ type: 'section', sect: currSect, content });
+    } else {
+      segments.push({ type: 'text', content });
+    }
+    currLines = [];
+  }
+
+  for (const line of lines) {
+    let matched = null;
+    for (const s of SECTS) {
+      if (s.pat.test(line.trim())) {
+        matched = s;
+        break;
+      }
+    }
+    if (matched) {
+      flush();
+      currSect = matched;
+      const afterColon = line.substring(line.indexOf(':') + 1).trim();
+      currLines = afterColon ? [afterColon] : [];
+    } else {
+      currLines.push(line);
+    }
+  }
+  flush();
+
+  return segments;
+}
+
+function renderRespBox(raw) {
+  lastRaw = raw;
+  respBody.innerHTML = '';
+  const segs = parseResponse(raw);
+  if (!segs.length) {
+    respBody.innerHTML = `<div class="rs rs-generic"><div class="rs-lbl">📄 Response</div><div class="rs-body">${escHtml(raw)}</div></div>`;
+    respBtns.style.display = 'flex';
+    return;
+  }
+  const wrap = document.createElement('div');
+  wrap.className = 'resp-sections';
+  for (const seg of segs) {
+    if (!seg.content) continue;
+    const card  = document.createElement('div');
+    const lbl   = document.createElement('div');
+    const body  = document.createElement('div');
+    lbl.className  = 'rs-lbl';
+    body.className = 'rs-body';
+    body.textContent = seg.content; 
+    if (seg.type === 'section') {
+      card.className = `rs ${seg.sect.cls}`;
+      lbl.textContent = seg.sect.lbl;
+    } else {
+      card.className = 'rs rs-generic';
+      lbl.textContent = '📄 Response';
+    }
+    card.appendChild(lbl);
+    card.appendChild(body);
+    wrap.appendChild(card);
+  }
+  respBody.appendChild(wrap);
+  respBtns.style.display = 'flex';
+}
+
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function showSkeleton() {
+  respBody.innerHTML = `<div class="skel">
+    <div class="skbar w80"></div><div class="skbar w100"></div>
+    <div class="skbar w60"></div><div class="skbar w100"></div>
+    <div class="skbar w45"></div><div class="skbar w80"></div>
+    <div class="skbar w100"></div><div class="skbar w60"></div>
+  </div>`;
+  respBtns.style.display = 'none';
+}
+
+/* ════════════════════════════════════════════════════════
+   COPY & SPEAK RESPONSE
+*/
+function copyResp() {
+  if (!lastRaw) return;
+  navigator.clipboard.writeText(lastRaw).then(() => {
+    copyBtn.textContent = '✓ Copied!';
+    setTimeout(() => { copyBtn.innerHTML = `<svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy`; }, 2000);
+  });
+}
+function speakResp() {
+  if (lastRaw) speakText(lastRaw);
+}
+
+/* ════════════════════════════════════════════════════════
+   SPEECH RECOGNITION (STT)
+*/
+function initSTT() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { micBtn.style.display = 'none'; return; }
+  recog = new SR();
+  recog.continuous = false;
+  recog.interimResults = false;
+  recog.onstart  = () => { micOn = true; micBtn.classList.add('on'); micLbl.textContent = 'Stop Listening'; setStatus('listen'); };
+  recog.onresult = e => {
+    const t = e.results[0][0].transcript;
+    if (t) {
+      const cur = userInput.value.trim();
+      userInput.value = cur ? `${cur} ${t}` : t;
+      updateMetrics();
+    }
+  };
+  recog.onerror  = e => { setStatus('err', `Voice: ${e.error}`); resetMic(); };
+  recog.onend    = () => resetMic();
+}
+function toggleMic() {
+  if (!recog) return;
+  if (micOn) { recog.stop(); }
+  else { haltSpeech(); recog.lang = langSel.value; try { recog.start(); } catch(e) {} }
+}
+function resetMic() {
+  micOn = false;
+  micBtn.classList.remove('on');
+  micLbl.textContent = 'Speak Input';
+  if (statusTxt.textContent.includes('Listen')) setStatus('ready');
+}
+
+/* ════════════════════════════════════════════════════════
+   SPEECH SYNTHESIS (TTS)
+*/
+function speakText(raw) {
+  haltSpeech();
+  if (!('speechSynthesis' in window)) return;
+  const clean = raw.replace(/[❌✅💬📏✔️📋⚠️💡🎯📖🔊😊🎓↔️🔄📄*#_`]/g, '').trim();
+  if (!clean) return;
+  ttsUtter = new SpeechSynthesisUtterance(clean);
+  ttsUtter.lang  = langSel.value;
+  ttsUtter.rate  = 0.9;
+  ttsUtter.onstart = () => { setStatus('speak'); stopSpeakBtn.style.display = 'inline-flex'; };
+  ttsUtter.onend   = () => { setStatus('ready'); stopSpeakBtn.style.display = 'none'; };
+  ttsUtter.onerror = () => { setStatus('ready'); stopSpeakBtn.style.display = 'none'; };
+  window.speechSynthesis.speak(ttsUtter);
+}
+function haltSpeech() {
+  if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  stopSpeakBtn.style.display = 'none';
+  if (statusTxt.textContent.includes('Speaking')) setStatus('ready');
+}
+
+/* ════════════════════════════════════════════════════════
+   MAIN HANDLER
+*/
+async function handleSend() {
+  const text = userInput.value.trim();
+  if (!text) return;
+  haltSpeech();
+
+  addBubble('user', text);
+  userInput.value = '';
+  updateMetrics();
+  chatLog.push({ role: 'user', content: text });
+  saveHistory();
+
+  setStatus('think', 'GrammarMaster is thinking…');
+  setFormState(false);
+  showSkeleton();
+
+  try {
+    const reply = await callGemini(text);
+    addBubble('assistant', reply);
+    chatLog.push({ role: 'assistant', content: reply });
+    saveHistory();
+    renderRespBox(reply);
+    setStatus('ready');
+    speakText(reply);
+  } catch (err) {
+    const msg = err.message || "Connection error.";
+    respBody.innerHTML = `<div class="rs rs-err"><div class="rs-lbl">❌ Error</div><div class="rs-body">${escHtml(msg)}</div></div>`;
+    setStatus('err', 'Failed to reach AI');
+  } finally {
+    setFormState(true);
+  }
+}
+
+function setFormState(enabled) {
+  userInput.disabled = !enabled;
+  sendBtn.disabled    = !enabled;
+  langSel.disabled    = !enabled;
+  if (micBtn) micBtn.disabled = !enabled;
+}
+
+/* ════════════════════════════════════════════════════════
+   GEMINI API CONNECTOR
+*/
+async function callGemini(promptText) {
+  if (!GEMINI_API_KEY || GEMINI_API_KEY === "AQ.Ab8RN6IUXmC1VtNHpbGyYM0jP_gVDYO9Ynl2jAoyp0gTttPYZA") {
+    throw new Error("Missing Gemini API Key! Open index.html in a text editor and paste your key into 'const GEMINI_API_KEY'.");
+  }
+
+  // Inject user selected language instructions inline dynamically
+  const languageCode = langSel.value;
+  const fullPrompt = `User Interface Selected Language: ${languageCode}. \nStudent Question: ${promptText}`;
+
+  // Structure system instructions alongside chat context per Gemini rules
+  const requestPayload = {
+    systemInstruction: {
+      parts: [{ text: SYS }]
+    },
+    contents: [
+      {
+        role: "user",
+        parts: [{ text: fullPrompt }]
+      }
+    ],
+    generationConfig: {
+      temperature: 0.3
+    }
+  };
+
+  const response = await fetch(API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(requestPayload)
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    const detailedMessage = errorData.error?.message || `HTTP ${response.status}`;
+    throw new Error(`Gemini API Error: ${detailedMessage}`);
+  }
+
+  const data = await response.json();
+  
+  // Extract output text string safely from response structure
+  if (data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
+    return data.candidates[0].content.parts[0].text;
+  } else {
+    throw new Error("Received an unexpected structure from the Gemini API.");
+  }
+}
+</script>
 </body>
 </html>
